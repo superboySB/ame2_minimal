@@ -2,6 +2,8 @@
 
 先按 [note.md](note.md) 配置同一张本地与云端 Docker 镜像。这里按照实际任务注册、全部地形、teacher 训练、推理、导出与诊断功能组织复现，并把场景能运行、训练能更新、策略完成目标分开记录。除 Docker / SSH / Git / 文件传输外，所有运行命令均在 Docker 内执行。
 
+学习和非学习模块的输入输出、数据格式、reward/loss/label 及 real→sim→real 细节单独记录在 [technical_pipeline.md](technical_pipeline.md)。
+
 ![上游提供的 G1 地形总览](misc/all_terrains_4x3.webp)
 
 这张图片来自原仓库，仅用于认识项目场景。下面只有带实际日志、报告或视频的条目才标记为通过。本次实验入口为 `scripts/research/run_suite.py`，产物位于 `outputs/research/reproduce-20261010/`；修复后的重跑使用新的目录，失败试次保留。图文预览对应的原始报告和 SHA-256 见 [视频来源清单](usage_assets/manifest.json)，克隆后可直接双击打开[离线播放器](usage_assets/playback.html)，无需 HTTP 服务；GitHub 页面可查看 GIF，或打开表中的 MP4 文件。

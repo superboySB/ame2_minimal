@@ -2,6 +2,8 @@
 
 这份手册对应 `research` 分支：同一个 `ame2:research` Docker 镜像在本地执行 Isaac Sim 仿真、检查点推理和录像，在 `tencent-231` 执行需要更多显存的 Isaac Lab 训练。源码、训练产物和镜像都有明确的同步路径；本地宿主机和服务器本体只承担 Docker、SSH、Git 和文件传输，不安装 Conda 或项目 Python 包。逐项功能、全部地形、图像和视频的复现记录见 [usage.md](usage.md)。
 
+状态/动作/奖励、PPO 与 student 蒸馏 loss、地图数据与 label 来源，以及实际 real→sim→real 实现边界，另见独立的 [technical_pipeline.md](technical_pipeline.md)。
+
 本仓库是 **Unitree G1 足式 locomotion** 项目，发布了普通 AME-2 teacher、主动 gaze teacher 及一个 gaze checkpoint。AM-Bench 的飞机与机械臂属于另一个项目；本手册沿用其配置与证据组织方式，覆盖本项目实际存在的机器人和场景。[上游 README](README.md) 明确尚未公开 neural mapping 权重、student 完整训练依赖、Tron1 环境和 neural map 训练代码，这些条目在 usage.md 单列。
 
 ## 1. 机器、目录与单镜像
@@ -205,6 +207,13 @@ ssh -o BatchMode=yes -p 22 tencent-231 'docker logs --tail 100 ame2-official-gaz
 ```
 
 脚本拒绝同名证据目录，`new-full-trial` 每次替换为新的运行标记。产物目录为 `outputs/research/reproduce-20261010/cloud_<标记>/`；checkpoint 在 `ame2/logs/rsl_rl/research_official_full/`。`full` 保持默认的 Gaze 环境、4096 env、5000 iterations、seed 42 和优化器，仅把 checkpoint 保存间隔改为 200，便于中途恢复与审计。默认算法参数与原 64000 环境 checkpoint 的差别见第 4 节。
+
+本次已有训练继续运行，不需再启动一份。它的独立 `training_monitor.py` 在 Docker 内每 60 秒更新 `cloud_full/progress.json`，不会改动训练。只有退出码、最终 manifest、26 个保存点（0、200…4800、4999）、checkpoint/optimizer 有限性与参数更新、最终 TensorBoard loss 及原始配置全部核验通过后，才写 `monitor_result.json` 的 `passed=true`。监控通过仍需另做最终策略 rollout，不能等同于任务成功率。
+
+```bash
+ssh -o BatchMode=yes -p 22 tencent-231 \
+  'cat /diff/dzp_is_sb/ame2-research/outputs/research/reproduce-20261010/cloud_full/progress.json'
+```
 
 | 阶段 | 内容 |
 | --- | --- |

@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "Docker_CPU_artifact_contract_probe",
+  "collected_utc": "2026-10-10T04:59:07.719169+00:00",
+  "scope": "Synthetic zero inputs verify serialized signatures and tensor formats, not rollout quality.",
+  "checkpoint": {
+    "path": "modelzoo/g1_gaze_64000env_10h/model_2400.pt",
+    "sha256": "d93594ceb0115216873b74451c7bed969c05c1dc502603dbf47d2e6f3e9fbe05",
+    "keys": [
+      "actor_state_dict",
+      "critic_state_dict",
+      "optimizer_state_dict",
+      "iter",
+      "infos"
+    ],
+    "iteration": 2400,
+    "actor_examples": {
+      "log_std": {
+        "shape": [
+          23
+        ],
+        "dtype": "torch.float32",
+        "finite": true
+      },
+      "fc_part.0.weight": {
+        "shape": [
+          16,
+          3
+        ],
+        "dtype": "torch.float32",
+        "finite": true
+      },
+      "fc_part.0.bias": {
+        "shape": [
+          16
+        ],
+        "dtype": "torch.float32",
+        "finite": true
+      },
+      "output_mlp.net.2.bias": {
+        "shape": [
+          512
+        ],
+        "dtype": "torch.float32",
+        "finite": true
+      },
+      "output_mlp.net.4.weight": {
+        "shape": [
+          23,
+          512
+        ],
+        "dtype": "torch.float32",
+        "finite": true
+      },
+      "output_mlp.net.4.bias": {
+        "shape": [
+          23
+        ],
+        "dtype": "torch.float32",
+        "finite": true
+      }
+    },
+    "critic_examples": {
+      "experts.0.net.0.weight": {
+        "shape": [
+          512,
+          499
+        ],
+        "dtype": "torch.float32",
+        "finite": true
+      },
+      "experts.0.net.0.bias": {
+        "shape": [
+          512
+        ],
+        "dtype": "torch.float32",
+        "finite": true
+      },
+      "experts.0.net.2.weight": {
+        "shape": [
+          512,
+          512
+        ],
+        "dtype": "torch.float32",
+        "finite": true
+      }
+    },
+    "actor_tensor_dtypes": [
+      "torch.float32"
+    ],
+    "optimizer_keys": [
+      "state",
+      "param_groups"
+    ],
+    "optimizer_groups": [
+      {
+        "use_muon": true,
+        "lr": 2.601229789434001e-05,
+        "weight_decay": 0.0,
+        "momentum": 0.95,
+        "nesterov": true,
+        "ns_steps": 5,
+        "adamw_betas": [
+          0.9,
+          0.999
+        ],
+        "adamw_eps": 1e-08,
+        "parameter_count": 71
+      },
+      {
+        "use_muon": false,
+        "lr": 2.601229789434001e-05,
+        "weight_decay": 0.0,
+        "momentum": 0.95,
+        "nesterov": true,
+        "ns_steps": 5,
+        "adamw_betas": [
+          0.9,
+          0.999
+        ],
+        "adamw_eps": 1e-08,
+        "parameter_count": 72
+      }
+    ]
+  },
+  "jit": {
+    "path": "outputs/research/reproduce-20261010/tasks-final/official_all_terrains/result.jit",
+    "sha256": "76e95e81aaa419cf71cf8ea70b015f5eb6e73c4c1babfebd34d17e437924170d",
+    "forward_schema": "forward(__torch__.rsl_rl.models.AME2_models.___torch_mangle_27._TorchAME2GazeModel self, Tensor prop, Tensor teacher_mapping) -> ((Tensor, Tensor, Tensor))",
+    "input_shapes": {
+      "prop": [
+        2,
+        82
+      ],
+      "teacher_mapping": [
+        2,
+        26,
+        15,
+        3
+      ]
+    },
+    "outputs": [
+      {
+        "shape": [
+          2,
+          23
+        ],
+        "dtype": "torch.float32",
+        "finite": true
+      },
+      {
+        "shape": [
+          2,
+          96
+        ],
+        "dtype": "torch.float32",
+        "finite": true
+      },
+      {
+        "shape": [
+          2,
+          64
+        ],
+        "dtype": "torch.float32",
+        "finite": true
+      }
+    ],
+    "forward_with_gaze_schema": null,
+    "gaze_outputs": null
+  },
+  "mid360_directions": {
+    "path": "ame2/ame2/sensors/mid360_raydirs.npy",
+    "sha256": "fb9263fb5c7a9711d0a9a212c7f25a0f2e4c0b02ea2e87778d6e8d601a94e930",
+    "shape": [
+      800000,
+      3
+    ],
+    "dtype": "float32",
+    "norm_min": 1.0,
+    "norm_max": 1.0000001192092896,
+    "contains_measured_ranges_or_labels": false
+  }
+}

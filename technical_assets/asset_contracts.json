@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "probe": {
+    "implementation": "technical_assets/probe_assets.py",
+    "mode": "CPU-only direct OpenUSD and NumPy reads; no SimulationApp",
+    "usd_library_version": "0.24.5"
+  },
+  "source_files": [
+    {
+      "path": "ame2/ame2/assets/g1_lidar/configuration/g1_lidar_base.usd",
+      "bytes": 16109497,
+      "sha256": "45b2455c9adca7ae1d69fcc1132025d7392ac1d9a55cc1ce7ad8e06d9d31a894"
+    },
+    {
+      "path": "ame2/ame2/assets/g1_lidar/configuration/g1_lidar_physics.usd",
+      "bytes": 13174,
+      "sha256": "b3f3647399eb67c1df77ce1d8905a4e3d4399d17c7d28952586314541191dc7d"
+    },
+    {
+      "path": "ame2/ame2/assets/g1_lidar/configuration/g1_lidar_sensor.usd",
+      "bytes": 656,
+      "sha256": "5115364b53bffbb37007af0fd1038336679b66abdae134bc87d0fca9829f9b60"
+    },
+    {
+      "path": "ame2/ame2/assets/g1_lidar/g1_lidar.usd",
+      "bytes": 1608,
+      "sha256": "9ab09316cf4f3780d22520be19fd78ed4e2d3087993372aa186df2e795bbf7a8"
+    },
+    {
+      "path": "ame2/ame2/sensors/mid360_raydirs.npy",
+      "bytes": 9600128,
+      "sha256": "fb9263fb5c7a9711d0a9a212c7f25a0f2e4c0b02ea2e87778d6e8d601a94e930"
+    }
+  ],
+  "robot_usd": {
+    "path": "ame2/ame2/assets/g1_lidar/g1_lidar.usd",
+    "default_prim": "/g1_29dof_rev_1_0",
+    "meters_per_unit": 1.0,
+    "up_axis": "Z",
+    "used_file_layers": [
+      "ame2/ame2/assets/g1_lidar/configuration/g1_lidar_base.usd",
+      "ame2/ame2/assets/g1_lidar/configuration/g1_lidar_physics.usd",
+      "ame2/ame2/assets/g1_lidar/configuration/g1_lidar_sensor.usd",
+      "ame2/ame2/assets/g1_lidar/g1_lidar.usd"
+    ],
+    "revolute_joint_count": 23,
+    "revolute_joint_names_usd_traversal": [
+      "left_hip_pitch_joint",
+      "left_hip_roll_joint",
+      "left_hip_yaw_joint",
+      "left_knee_joint",
+      "left_ankle_pitch_joint",
+      "left_ankle_roll_joint",
+      "right_hip_pitch_joint",
+      "right_hip_roll_joint",
+      "right_hip_yaw_joint",
+      "right_knee_joint",
+      "right_ankle_pitch_joint",
+      "right_ankle_roll_joint",
+      "waist_yaw_joint",
+      "waist_roll_joint",
+      "waist_pitch_joint",
+      "left_shoulder_pitch_joint",
+      "left_shoulder_roll_joint",
+      "left_shoulder_yaw_joint",
+      "left_elbow_joint",
+      "right_shoulder_pitch_joint",
+      "right_shoulder_roll_joint",
+      "right_shoulder_yaw_joint",
+      "right_elbow_joint"
+    ],
+    "revolute_joints_usd_traversal": [
+      {
+        "name": "left_hip_pitch_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/left_hip_pitch_joint"
+      },
+      {
+        "name": "left_hip_roll_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/left_hip_roll_joint"
+      },
+      {
+        "name": "left_hip_yaw_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/left_hip_yaw_joint"
+      },
+      {
+        "name": "left_knee_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/left_knee_joint"
+      },
+      {
+        "name": "left_ankle_pitch_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/left_ankle_pitch_joint"
+      },
+      {
+        "name": "left_ankle_roll_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/left_ankle_roll_joint"
+      },
+      {
+        "name": "right_hip_pitch_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/right_hip_pitch_joint"
+      },
+      {
+        "name": "right_hip_roll_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/right_hip_roll_joint"
+      },
+      {
+        "name": "right_hip_yaw_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/right_hip_yaw_joint"
+      },
+      {
+        "name": "right_knee_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/right_knee_joint"
+      },
+      {
+        "name": "right_ankle_pitch_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/right_ankle_pitch_joint"
+      },
+      {
+        "name": "right_ankle_roll_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/right_ankle_roll_joint"
+      },
+      {
+        "name": "waist_yaw_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/waist_yaw_joint"
+      },
+      {
+        "name": "waist_roll_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/waist_roll_joint"
+      },
+      {
+        "name": "waist_pitch_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/waist_pitch_joint"
+      },
+      {
+        "name": "left_shoulder_pitch_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/left_shoulder_pitch_joint"
+      },
+      {
+        "name": "left_shoulder_roll_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/left_shoulder_roll_joint"
+      },
+      {
+        "name": "left_shoulder_yaw_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/left_shoulder_yaw_joint"
+      },
+      {
+        "name": "left_elbow_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/left_elbow_joint"
+      },
+      {
+        "name": "right_shoulder_pitch_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/right_shoulder_pitch_joint"
+      },
+      {
+        "name": "right_shoulder_roll_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/right_shoulder_roll_joint"
+      },
+      {
+        "name": "right_shoulder_yaw_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/right_shoulder_yaw_joint"
+      },
+      {
+        "name": "right_elbow_joint",
+        "prim_path": "/g1_29dof_rev_1_0/joints/right_elbow_joint"
+      }
+    ],
+    "joint_order_note": "USD traversal order; policy/action order must be obtained from the instantiated Articulation/IO descriptors.",
+    "mid360_fixed_joint": {
+      "prim_path": "/g1_29dof_rev_1_0/joints/mid360_joint",
+      "usd_type": "PhysicsFixedJoint",
+      "body0": [
+        "/g1_29dof_rev_1_0/torso_link"
+      ],
+      "body1": [
+        "/g1_29dof_rev_1_0/mid360_link"
+      ],
+      "joint_frame0_position_m": [
+        0.0002835000050254166,
+        2.9999999242136255e-05,
+        0.4061799943447113
+      ],
+      "joint_frame0_orientation_wxyz": [
+        0.999798595905304,
+        0.0,
+        0.020069940015673637,
+        0.0
+      ],
+      "joint_frame1_position_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "joint_frame1_orientation_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "convention": "Joint-frame transforms in body0/body1, not a complete hardware calibration."
+    },
+    "sensor_frames": [
+      {
+        "name": "d435_link",
+        "prim_path": "/g1_29dof_rev_1_0/d435_link",
+        "usd_type": "Xform"
+      },
+      {
+        "name": "imu_in_pelvis",
+        "prim_path": "/g1_29dof_rev_1_0/imu_in_pelvis",
+        "usd_type": "Xform"
+      },
+      {
+        "name": "imu_in_torso",
+        "prim_path": "/g1_29dof_rev_1_0/imu_in_torso",
+        "usd_type": "Xform"
+      },
+      {
+        "name": "mid360_link",
+        "prim_path": "/g1_29dof_rev_1_0/mid360_link",
+        "usd_type": "Xform"
+      }
+    ],
+    "sensor_frame_note": "USD Xform frame names do not demonstrate a real sensor driver, IMU estimator, or hardware deployment."
+  },
+  "mid360_direction_table": {
+    "path": "ame2/ame2/sensors/mid360_raydirs.npy",
+    "shape": [
+      800000,
+      3
+    ],
+    "dtype": "float32",
+    "all_finite": true,
+    "unit_norm_min": 1.0,
+    "unit_norm_max": 1.0000001192092896,
+    "unit_norm_allclose_atol_1e_6": true,
+    "frame_contract_source": "ame2/ame2/sensors/mid360_lidar.py:30",
+    "data_contract": "Unit ray directions in sensor frame, ordered scan sequence; no measured range, intensity, timestamp, pose, or supervised label columns."
+  }
+}
