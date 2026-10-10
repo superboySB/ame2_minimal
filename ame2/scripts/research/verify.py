@@ -302,6 +302,7 @@ if __name__ == "__main__":
     try:
         main(report)
     except BaseException as error:
+        report["passed"] = False
         report["error"] = {"type": type(error).__name__, "message": str(error), "traceback": traceback.format_exc()}
         traceback.print_exc()
         raise
