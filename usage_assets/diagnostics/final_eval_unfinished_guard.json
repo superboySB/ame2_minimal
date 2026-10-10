@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "kind": "official_5000_final_policy_evaluation",
+  "started_utc": "2026-10-10T05:23:46.097811+00:00",
+  "command": [
+    "scripts/research/evaluate_final.py",
+    "--training_report",
+    "../outputs/research/reproduce-20261010/cloud_full",
+    "--output",
+    "../outputs/research/reproduce-20261010/final-eval-pending-guard-fixed"
+  ],
+  "passed": false,
+  "execution_checks_passed": false,
+  "evaluation_complete": false,
+  "jobs": [],
+  "limitations": [
+    "Execution and numeric checks do not imply reliable task performance.",
+    "First-episode success uses the documented position/heading-at-timeout metric, not a paper benchmark.",
+    "These teacher evaluations use privileged simulated mapping and do not validate real hardware."
+  ],
+  "error": {
+    "type": "AssertionError",
+    "message": "Original training has no completed monitor result yet",
+    "traceback": "Traceback (most recent call last):\n  File \"/workspace/ame2-minimal/ame2/scripts/research/evaluate_final.py\", line 222, in <module>\n    main(args, summary)\n  File \"/workspace/ame2-minimal/ame2/scripts/research/evaluate_final.py\", line 122, in main\n    checkpoint, manifest, remote_audit = completed_training(args.training_report)\n                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/ame2-minimal/ame2/scripts/research/evaluate_final.py\", line 50, in completed_training\n    assert terminal_path.is_file(), \"Original training has no completed monitor result yet\"\n           ^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Original training has no completed monitor result yet\n"
+  },
+  "wall_seconds": 0.001260331948287785
+}

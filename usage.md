@@ -25,6 +25,8 @@
 
 不能把注册成功当作 student 已能运行，不能把两次 PPO 更新当作训练收敛，也不能把视频正常生成当作越障成功。重复录制同一个试次的不同视角只算一次实验。每段视频应保留 task、terrain、difficulty、seed、checkpoint 来源、步数、最终目标距离、提前终止及文件哈希。
 
+最终新训练权重将额外使用 `verify.py --first_episode`：在物理步后、自动 reset 前只读采样第一次回合，分别记录位置到达、位置与朝向同时到达、早停、超时和未完成回合。严格指标定义为首次回合以 timeout 结束、无 early termination、终点位置误差 <0.5 m 且 wrapped heading error 绝对值 <0.5 rad；这是本分支明确选定的评估指标，不是论文 benchmark 成功率。旧报告的 `reached_goal` 仍表示整个有界 rollout 中曾到达，可能跨自动 reset，二者不可混用。
+
 ## 1. 全部机器人与任务入口
 
 本项目只发布了 **Unitree G1**，没有飞机。G1 模型位于 `ame2/ame2/assets/g1_lidar/`；普通 teacher 与 gaze teacher 共用物理环境，actor 编码结构不同。
@@ -124,6 +126,10 @@ G1 teacher 的 actor 观察 `teacher_mapping` 和 `teacher_prop`，critic 使用
 `--policy zero`、`random`、`native` 或 `jit` 明确策略路径；不传 checkpoint 默认 zero。JIT 路径先比较 native/exported actions，再实际执行 JIT rollout。`--mid360` 为 teacher 环境单独增加 raw LiDAR，避免把缺失 neural mapping 权重误当作原始 raycast 缺失。
 
 2026-10-10 的 `tasks-final/summary.json` 共 8 项全部通过。四个 teacher ID 各在全部 16 种地形执行 32 步随机动作；官方 native 和 JIT 各执行 800 步，观测、动作、奖励和机器人状态均有限，JIT 动作比较最大绝对误差为 `4.77e-7`。Native 的 16 个环境都曾进入目标半径，其中 `test_1` 发生 1 次提前终止；JIT 的 `peak` 与 `test_1` 各发生 1 次。环境会自动 reset，因此这些记录不能写作“16/16 无跌倒”或论文成功率。逐环境数值与原始报告哈希保存在[验收快照](usage_assets/validation_snapshot.json)。
+
+新增首回合统计已实测：同一发布 checkpoint、seed42、difficulty0.5、全部16地形、native800步，**15/16** 在首回合 timeout 时同时满足位置/朝向阈值且未早停；`test_1` 在第283步（5.66s）早停，终止前距离1.686m，因此判失败。其他15项均完整运行800步；JIT parity 最大误差仍为 `4.77e-7`。[首回合原始报告](usage_assets/diagnostics/first_episode_official.json)、[源码与报告SHA](usage_assets/diagnostics/first_episode_provenance.json)。这是固定条件的单次 baseline，不是多seed成功率。
+
+统计实现另经7项Docker CPU测试和短训权重的真实800步检查：短训模型首回合16/16早停、严格成功0；整段rollout累计206次早停，证明新统计不会把多回合混为一次。[短训统计报告](usage_assets/diagnostics/first_episode_short_train.json)。最终评估入口的[未完成训练拒绝记录](usage_assets/diagnostics/final_eval_unfinished_guard.json)和[子进程超时/中断回收检查](usage_assets/diagnostics/final_eval_process_contract.json)也已保存；这些检查不代表云端5000次训练已完成。
 
 ## 3. 两种 teacher 训练
 

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "image_config_digest": "sha256:6333e6323c90d66b81746da1ca2add459fa30019790b7e63524a26d0797fad46",
+  "reports": [
+    {
+      "source": "outputs/research/reproduce-20261010/official-first-episode/result.json",
+      "copy": "usage_assets/diagnostics/first_episode_official.json",
+      "sha256": "43032f5d431386c8b547f091f20df9c0efe7f189347be4a4708595fb90ef20bb"
+    },
+    {
+      "source": "outputs/research/reproduce-20261010/first-episode-smoke-fixed/result.json",
+      "copy": "usage_assets/diagnostics/first_episode_short_train.json",
+      "sha256": "11648b25bd06383bf872a1c9720d0aea39716fa8d9bfa2c088e7b1edfd5a08ae"
+    },
+    {
+      "source": "outputs/research/reproduce-20261010/final_eval_process_contract.json",
+      "copy": "usage_assets/diagnostics/final_eval_process_contract.json",
+      "sha256": "9c7605e71fdbfa8f7f0faa71bb3566836343416d4db75553e705a849a4f007d9"
+    },
+    {
+      "source": "outputs/research/reproduce-20261010/final-eval-pending-guard-fixed/summary.json",
+      "copy": "usage_assets/diagnostics/final_eval_unfinished_guard.json",
+      "sha256": "a9fbfb0e760307a6d75528ed112173e6ce67c95586a36403f47fbc0c804d1fa1"
+    }
+  ],
+  "source_sha256": {
+    "ame2/scripts/research/verify.py": "36f7a485eb3b93af3c7d95a920cee49c4e6231ae23596a407406b534cfdc6bdf",
+    "ame2/scripts/research/episode_metrics.py": "6a5555e7fc7488809e44855c64cc2ab8e1f597cdbdc4dfa88e00e17b200c5479",
+    "ame2/scripts/research/test_episode_metrics.py": "af14f98d00b1d634e116a581053db9422d3cfa99935fe345ba81ac719623512a",
+    "ame2/scripts/research/evaluate_final.py": "089840408c28974a9d5be74b9580c8c1cd79107a6f8a140b6ed30ac6c332edf0"
+  },
+  "scope": "First-episode metric validation and published-checkpoint baseline; not final 5000-update policy evaluation."
+}

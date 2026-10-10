@@ -29,6 +29,7 @@ parser.add_argument("--export_jit", action="store_true", help="Script, freeze, r
 parser.add_argument("--video", action="store_true")
 parser.add_argument("--attention", action="store_true", help="Draw native actor attention over the height scan")
 parser.add_argument("--mid360", action="store_true", help="Check raw Mid360 raycasting without the unreleased neural mapper")
+parser.add_argument("--first_episode", action="store_true", help="Record first-episode pose goals and terminal outcomes before auto-reset")
 parser.add_argument("--report", type=Path, default=Path("logs/research/verify.json"))
 AppLauncher.add_app_launcher_args(parser)
 args = parser.parse_args()
@@ -149,6 +150,7 @@ def main(report):
                               "generator_curriculum": generator.curriculum,
                               "environment_terrain_curriculum": cfg.curriculum.terrain_levels is not None}
     env = gym.make(args.task, cfg=cfg, render_mode="rgb_array" if args.video else None)
+    restore_episode_hook = None
     try:
         if args.video:
             env = gym.wrappers.RecordVideo(
@@ -208,6 +210,11 @@ def main(report):
             ))
         robot = raw.scene["robot"]
         command = raw.command_manager.get_term("base_pose")
+        episode_metrics = None
+        if args.first_episode:
+            from episode_metrics import FirstEpisodeMetrics, install_reward_snapshot
+            episode_metrics = FirstEpisodeMetrics(env.num_envs, raw.step_dt, device=raw.device)
+            restore_episode_hook = install_reward_snapshot(raw, episode_metrics)
         initial_position = robot.data.root_pos_w.clone()
         cumulative_reward = torch.zeros(env.num_envs, device=raw.device)
         minimum_distance = torch.full_like(cumulative_reward, float("inf"))
@@ -262,6 +269,8 @@ def main(report):
             "timeouts": int(timeouts[i]), "initial_position": initial_position[i].tolist(),
             "final_position": robot.data.root_pos_w[i].tolist(),
         } for i in range(env.num_envs)]
+        if episode_metrics is not None:
+            report["first_episode"] = episode_metrics.as_report()
         report["steps_completed"] = steps
         report["simulation_seconds"] = steps * raw.step_dt
         report["finite_checks_passed"] = True
@@ -280,6 +289,8 @@ def main(report):
                 raise AssertionError(f"Not all terrains were visited: {set(names) - observed}")
         report["passed"] = True
     finally:
+        if restore_episode_hook is not None:
+            restore_episode_hook()
         # Isaac Lab 2.3.2 may retain the viewport controller through UI
         # references after env.close deletes scene. Unsubscribe tracking first.
         controller = getattr(env.unwrapped, "viewport_camera_controller", None)

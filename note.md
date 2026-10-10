@@ -215,6 +215,17 @@ ssh -o BatchMode=yes -p 22 tencent-231 \
   'cat /diff/dzp_is_sb/ame2-research/outputs/research/reproduce-20261010/cloud_full/progress.json'
 ```
 
+训练监控确认 `completed/passed=true` 后回传产物，再用本地同一镜像独立验收最终权重：
+
+```bash
+./container/cloud.sh pull
+./container/run.sh -g 0 cmd /isaac-sim/python.sh scripts/research/evaluate_final.py \
+  --training_report /workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_full \
+  --output /workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy
+```
+
+本地单卡桌面按前文显式使用 GPU0；云端仍按空闲卡规则选择。这个入口拒绝未完成的训练，核对最终文件 SHA256，CPU 重审初始/最终 checkpoint，随后运行 3 个 seed 的全部 16 地形、native/JIT 对照及两个录像试次。输出目录必须为空，重跑用新目录。`passed` 表示执行/有限值/导出检查通过，任务表现另看 first-episode 统计；不会把自动 reset 后才达到目标计作首回合成功。
+
 | 阶段 | 内容 |
 | --- | --- |
 | `matrix` | 普通 / gaze × Muon+bf16 / Adam+fp32，以及单 value head 对照 |

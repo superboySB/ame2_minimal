@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "checks": {
+    "normal_exit": true,
+    "timeout_recovers_child": true,
+    "interrupt_recovers_own_child": true
+  }
+}
