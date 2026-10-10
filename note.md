@@ -208,7 +208,7 @@ ssh -o BatchMode=yes -p 22 tencent-231 'docker logs --tail 100 ame2-official-gaz
 
 脚本拒绝同名证据目录，`new-full-trial` 每次替换为新的运行标记。产物目录为 `outputs/research/reproduce-20261010/cloud_<标记>/`；checkpoint 在 `ame2/logs/rsl_rl/research_official_full/`。`full` 保持默认的 Gaze 环境、4096 env、5000 iterations、seed 42 和优化器，仅把 checkpoint 保存间隔改为 200，便于中途恢复与审计。默认算法参数与原 64000 环境 checkpoint 的差别见第 4 节。
 
-本次已有训练继续运行，不需再启动一份。它的独立 `training_monitor.py` 在 Docker 内每 60 秒更新 `cloud_full/progress.json`，不会改动训练。只有退出码、最终 manifest、26 个保存点（0、200…4800、4999）、checkpoint/optimizer 有限性与参数更新、最终 TensorBoard loss 及原始配置全部核验通过后，才写 `monitor_result.json` 的 `passed=true`。监控通过仍需另做最终策略 rollout，不能等同于任务成功率。
+本次已有训练继续运行，不需再启动一份。它的独立 `training_monitor.py` 在 Docker 内每 60 秒更新 `cloud_full/progress.json`，不会改动训练。只有退出码、最终 manifest、26 个保存点（0、200…4800、4999）、checkpoint/optimizer 有限性与参数更新、7 项 TensorBoard Loss 各自完整的 5000 条有限记录（0–4999）及原始配置全部核验通过后，才写 `monitor_result.json` 的 `passed=true`。监控通过仍需另做最终策略 rollout，不能等同于任务成功率。
 
 ```bash
 ssh -o BatchMode=yes -p 22 tencent-231 \
@@ -224,7 +224,7 @@ ssh -o BatchMode=yes -p 22 tencent-231 \
   --output /workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy
 ```
 
-本地单卡桌面按前文显式使用 GPU0；云端仍按空闲卡规则选择。这个入口拒绝未完成的训练，核对最终文件 SHA256，CPU 重审初始/最终 checkpoint，随后运行 3 个 seed 的全部 16 地形、native/JIT 对照及两个录像试次。输出目录必须为空，重跑用新目录。`passed` 表示执行/有限值/导出检查通过，任务表现另看 first-episode 统计；不会把自动 reset 后才达到目标计作首回合成功。
+本地单卡桌面按前文显式使用 GPU0；云端仍按空闲卡规则选择。这个入口拒绝未完成的训练，逐一核对回传的全部 26 个 checkpoint 的 SHA256，CPU 重审初始/最终 checkpoint，导出真实训练曲线，再运行 3 个 seed 的全部 16 地形、native/JIT 对照及两个录像试次。`training_curves/` 保存 PNG、SVG 和含全部原始 scalar 点与事件文件 SHA256 的 `curves.json`，不做平滑或插值；`/time` 标签的横轴是秒，不混作更新次数。曲线还需核对 7 项必需 Loss 的迭代序列精确为 0–4999，缺步或重复都失败。输出目录必须为空，重跑用新目录。`passed` 表示执行/有限值/导出检查通过，任务表现另看 first-episode 统计；不会把自动 reset 后才达到目标计作首回合成功。
 
 | 阶段 | 内容 |
 | --- | --- |

@@ -192,6 +192,8 @@ ssh -o BatchMode=yes -p 22 tencent-231 \
 
 完整验收需训练结束、iteration 4999 checkpoint 与配置一致、最终 checkpoint / event 审计通过，再做独立策略评估。进行中的初始化报告不用于判定已完成或训练失败。
 
+最终评估入口会用 `scripts/research/plot_training.py` 从该次事件文件导出训练曲线及完整原始数据；输出包含 loss、奖励、回合长度、课程、策略标准差和吞吐，保留事件文件 SHA256。工具已用真实的 iteration 0–236 快照在 CPU Docker 内[逐点核对](usage_assets/diagnostics/training_curve_tool_validation.json)；请求最终 4999 门槛时，该未完成快照正确失败。独立监控的[18 项 CPU 合同检查](usage_assets/diagnostics/training_monitor_contract.json)涵盖缺 checkpoint、错误配置、缺 loss、记录不足和文件写入竞态。工具验证通过与完整训练完成分别记录，最终曲线需要等待原任务结束。
+
 双 GPU 训练的首次默认 NCCL 通信试次发生 stall，安全结束后保留为失败记录。随后在本服务器使用 `NCCL_CUMEM_HOST_ENABLE=0`、`NCCL_P2P_DISABLE=1`、`NCCL_IB_DISABLE=1`、`NCCL_SOCKET_IFNAME=lo` 的兼容组合重新执行，并记录 NCCL INFO / INIT,GRAPH,ENV 日志；两个 rank 的 `world_size=2`、每卡 64 env、各完成 3 次更新到 iteration 2，共用同一运行目录，退出码、checkpoint / optimizer / loss / 参数变化审计均通过。该组合实际可用，尚未隔离其中哪一项解决了通信问题；用 `AME2_NCCL_COMPAT=1` 复现，完整命令见 note.md。变量定义可查 [NVIDIA NCCL 官方手册](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html)。
 
 ## 4. 推理、导出和诊断功能

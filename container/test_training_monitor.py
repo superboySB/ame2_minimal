@@ -48,9 +48,11 @@ class MonitorContract(unittest.TestCase):
         self.write("train_result.json", self.manifest)
         self.write("job.json", {"exit_code": 0, "ended_utc": "2026-10-10T14:00:00+00:00"})
         self.write("validation.json", {"passed": True, "run": str(self.run)})
+        loss_tags = {f"Loss/{name}": {"finite": True, "count": 5000, "first_step": 0, "last_step": 4999}
+                     for name in ("value", "surrogate", "entropy", "entropy_coef", "symmetry", "auxiliary", "learning_rate")}
         self.audit = {"passed": True, "runs": [{"path": str(self.run), "updates_proven": True,
             "checkpoints": checkpoints,
-            "tensorboard": {"passed": True, "tags": {"Loss/value": {"finite": True, "last_step": 4999}}}}]}
+            "tensorboard": {"passed": True, "tags": loss_tags}}]}
         self.write("checkpoint_audit.json", self.audit)
         (self.report / "exit_code.txt").write_text("0\n")
         (self.run / "params/agent.yaml").write_text("seed: 42\nmax_iterations: 5000\nalgorithm:\n  optimizer: muon\n  use_mixed_precision: true\n  multi_head_critic: true\nnum_steps_per_env: 24\nactor:\n  class_name: AME2GazeModel\nsave_interval: 200\n")
@@ -86,6 +88,24 @@ class MonitorContract(unittest.TestCase):
     def test_incorrect_final_loss_step(self):
         self.complete()
         self.audit["runs"][0]["tensorboard"]["tags"]["Loss/value"]["last_step"] = 4998
+        self.write("checkpoint_audit.json", self.audit)
+        self.assertEqual(monitor.inspect(self.report, self.run, 5000)["state"], "failed")
+
+    def test_missing_loss_tag(self):
+        self.complete()
+        del self.audit["runs"][0]["tensorboard"]["tags"]["Loss/learning_rate"]
+        self.write("checkpoint_audit.json", self.audit)
+        self.assertEqual(monitor.inspect(self.report, self.run, 5000)["state"], "failed")
+
+    def test_incomplete_loss_record_count(self):
+        self.complete()
+        self.audit["runs"][0]["tensorboard"]["tags"]["Loss/surrogate"]["count"] = 4999
+        self.write("checkpoint_audit.json", self.audit)
+        self.assertEqual(monitor.inspect(self.report, self.run, 5000)["state"], "failed")
+
+    def test_nonzero_loss_start(self):
+        self.complete()
+        self.audit["runs"][0]["tensorboard"]["tags"]["Loss/entropy"]["first_step"] = 1
         self.write("checkpoint_audit.json", self.audit)
         self.assertEqual(monitor.inspect(self.report, self.run, 5000)["state"], "failed")
 

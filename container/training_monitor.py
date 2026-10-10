@@ -84,8 +84,13 @@ def final_evidence(report_dir, run_dir, manifest, iterations):
     assert all(latest[key]["changed_tensors"] > 0 for key in ("actor_change_from_first", "critic_change_from_first"))
     assert run["tensorboard"]["passed"]
     tags = run["tensorboard"]["tags"]
-    losses = [value for name, value in tags.items() if name.startswith("Loss/")]
-    assert losses and all(value["finite"] and value["last_step"] == iterations - 1 for value in losses)
+    required_losses = {f"Loss/{name}" for name in (
+        "value", "surrogate", "entropy", "entropy_coef", "symmetry", "auxiliary", "learning_rate")}
+    assert required_losses <= tags.keys(), "Missing required TensorBoard loss tag"
+    for name in required_losses:
+        value = tags[name]
+        assert value["finite"] and value["count"] == iterations and value["first_step"] == 0 and value["last_step"] == iterations - 1, f"Incomplete or nonfinite TensorBoard loss history: {name}"
+    assert all(value["finite"] for name, value in tags.items() if name.startswith("Loss/"))
     import yaml
     agent = yaml.safe_load((run_dir / "params/agent.yaml").read_text())
     # Isaac serializes tuples and slices using Python YAML tags. BaseLoader

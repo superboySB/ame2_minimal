@@ -61,8 +61,8 @@ def completed_training(report_dir):
     spec.loader.exec_module(monitor)
     assert monitor.final_evidence(report_dir, run, manifest, 5000) is True, "Final training evidence is incomplete"
     audit = json.loads((report_dir / "checkpoint_audit.json").read_text())
-    # Verify transferred bytes for the initial/final pair used by the local audit.
-    for item in (audit["runs"][0]["checkpoints"][0], audit["runs"][0]["checkpoints"][-1]):
+    # Every transferred checkpoint must match the bytes audited in the cloud.
+    for item in audit["runs"][0]["checkpoints"]:
         assert digest(Path(item["path"])) == item["sha256"], "Transferred checkpoint SHA256 mismatch"
     return checkpoint, manifest, audit
 
@@ -140,6 +140,23 @@ def main(args, summary):
     summary["jobs"].append(job)
     write_summary(args.output / "summary.json", summary)
     assert job["passed"] and json.loads(local_audit.read_text())["passed"], "Local checkpoint audit failed"
+
+    curves_dir = args.output / "training_curves"
+    command = [PYTHON, "scripts/research/plot_training.py", "--run", str(checkpoint.parent),
+               "--output", str(curves_dir), "--expected_last_step", "4999"]
+    job = {"name": "training_curves", "command": command,
+           "report": str(curves_dir / "curves.json"), "passed": False}
+    summary["jobs"].append(job)
+    write_summary(args.output / "summary.json", summary)
+    try:
+        job.update(execute(command, args.output / "training_curves.log", args.timeout))
+        curves = json.loads((curves_dir / "curves.json").read_text())
+        job["report_sha256"] = digest(curves_dir / "curves.json")
+        job["passed"] &= bool(curves["curves_valid"] and curves["expected_last_step_gate"]["passed"]
+                              and Path(curves["run"]["path"]).resolve() == checkpoint.parent)
+        assert job["passed"], "Final training curves failed validation"
+    finally:
+        write_summary(args.output / "summary.json", summary)
 
     # Three independently seeded all-terrain trials, plus native/JIT parity on seed42.
     scenarios = [(f"native_seed{seed}", "all", 16, seed, "native", .5, False, False) for seed in args.seeds]

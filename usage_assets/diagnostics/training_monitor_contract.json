@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "name": "training_monitor_contract",
+  "passed": true,
+  "tests_run": 18,
+  "checks": [
+    "test_complete_with_inert_isaac_yaml",
+    "test_empty_exit_file_during_shell_redirection",
+    "test_incomplete_loss_record_count",
+    "test_incorrect_final_loss_step",
+    "test_missing_checkpoint_file",
+    "test_missing_final_evidence_grace",
+    "test_missing_loss_tag",
+    "test_missing_saved_checkpoint",
+    "test_nonfinite_loss_valid_json",
+    "test_nonzero_exit",
+    "test_nonzero_loss_start",
+    "test_older_audit_does_not_prove_current_checkpoint",
+    "test_running_manifest_and_partial_iteration",
+    "test_wrong_configured_iterations",
+    "test_wrong_run_rejected",
+    "test_wrong_saved_optimizer",
+    "test_wrong_seed",
+    "test_wrong_terrain_same_tile_count"
+  ],
+  "monitor_source_sha256": "5945ece3b392480b03e833b64030a0e0d9511b19b7d3cd394e8cfbb1edbec645"
+}
