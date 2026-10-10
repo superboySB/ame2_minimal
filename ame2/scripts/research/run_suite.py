@@ -159,6 +159,10 @@ for name, command in jobs:
         else:
             audit_dir = args.output / name
             audit_dir.mkdir(parents=True, exist_ok=True)
+            if train_manifest.is_file():
+                actual = json.loads(train_manifest.read_text())
+                item["passed"] = item["passed"] and Path(actual.get("log_dir", "")).resolve() == new_runs[0].resolve()
+                item["passed"] = item["passed"] and Path(actual.get("final_checkpoint", "")).is_file()
             audit_path = audit_dir / "checkpoint_audit.json"
             audit_command = [python, "scripts/research/checkpoint_audit.py", str(new_runs[0]),
                              "--tensorboard", "--require_updates", "--expected_heads", str(expected_heads),
@@ -169,7 +173,14 @@ for name, command in jobs:
             item["checkpoint_audit"] = str(audit_path)
             item["passed"] = item["passed"] and audit.returncode == 0 and audit_path.exists()
             if audit_path.exists():
-                item["passed"] = item["passed"] and bool(json.loads(audit_path.read_text()).get("passed"))
+                evidence = json.loads(audit_path.read_text())
+                item["passed"] = item["passed"] and bool(evidence.get("passed")) and len(evidence.get("runs", [])) == 1
+                if evidence.get("runs"):
+                    latest = evidence["runs"][0]["checkpoints"][-1]
+                    item["passed"] = item["passed"] and latest["iteration"] == expected_iterations - 1
+                    if train_manifest.is_file():
+                        expected_optimizer = "muon_adamw" if actual.get("optimizer") == "muon" else "adam_family"
+                        item["passed"] = item["passed"] and latest["optimizer_kind"] == expected_optimizer
             for configuration in ("env.yaml", "agent.yaml"):
                 if not (new_runs[0] / "params" / configuration).is_file():
                     item["passed"] = False

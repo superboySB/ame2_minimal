@@ -21,6 +21,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg \
 
 COPY rsl_rl/ ${AME2_ROOT}/rsl_rl
 COPY ame2/ ${AME2_ROOT}/ame2
+COPY modelzoo/ ${AME2_ROOT}/modelzoo
+COPY container/ ${AME2_ROOT}/container
 
 # the bundled rsl_rl replaces the image's stock rsl-rl-lib
 RUN test "$(cat /workspace/isaaclab/VERSION)" = 2.3.2 \
@@ -32,8 +34,12 @@ RUN test "$(cat /workspace/isaaclab/VERSION)" = 2.3.2 \
     && /isaac-sim/python.sh -m pip freeze > /workspace/ame2-minimal/image-packages.txt
 
 ARG SOURCE_REVISION=unknown
+ARG SOURCE_DIRTY=unknown
+ARG SOURCE_TREE_SHA256=unknown
 LABEL org.opencontainers.image.title="AME-2 research" \
       org.opencontainers.image.revision=${SOURCE_REVISION} \
+      org.ame2.source.dirty=${SOURCE_DIRTY} \
+      org.ame2.source.tree-sha256=${SOURCE_TREE_SHA256} \
       org.ame2.isaaclab.version="2.3.2"
 
 WORKDIR ${AME2_ROOT}/ame2

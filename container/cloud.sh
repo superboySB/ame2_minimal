@@ -11,7 +11,7 @@ usage() {
 Usage: container/cloud.sh [--dry-run] push|pull|image|deploy|gpu|status|run [run.sh arguments...]
   push     rsync source + modelzoo to the cloud (no deletion; excludes generated logs/caches)
   pull     retrieve logs/checkpoints, outputs, artifacts and usage_assets (no deletion)
-  image    docker save -> gzip -> rsync -> SHA256 verification -> docker load; verify image ID
+  image    docker save -> gzip -> rsync -> SHA256 verification -> docker load; verify stable config digest
   deploy   push source and synchronize image
   gpu      print the smallest GPU with no process and no running-container reservation
   status   show remote GPU processes and ame2 containers
@@ -61,11 +61,13 @@ transfer_image() {
         echo '# Inspect local and remote image IDs; skip when they match.'
         show docker image inspect "$IMAGE" --format '{{.Id}}'
         remote docker image inspect "$IMAGE" --format '{{.Id}}'
-        echo '# Otherwise save to .transfer/IMAGE_ID.tar.gz, rsync archive + checksum, verify SHA256, load, verify image ID.'
+        echo '# Otherwise save to .transfer/IMAGE_ID.tar.gz, rsync archive + checksum, verify SHA256, load, verify stable config digest.'
         return
     fi
-    image_id=$(docker image inspect "$IMAGE" --format '{{.Id}}')
-    remote_id=$(remote docker image inspect "$IMAGE" --format '{{.Id}}' 2>/dev/null || true)
+    image_id=$("$HERE/image_identity.sh" "$IMAGE")
+    remote mkdir -p "$REMOTE_ROOT/container"
+    "${RSYNC[@]}" "$HERE/image_identity.sh" "$HOST:$REMOTE_ROOT/container/"
+    remote_id=$(remote "$REMOTE_ROOT/container/image_identity.sh" "$IMAGE" 2>/dev/null || true)
     if [[ "$remote_id" == "$image_id" ]]; then echo "[cloud] exact image already loaded: $image_id"; return; fi
     key=${image_id#sha256:}; archive="$ROOT/.transfer/ame2-$key.tar.gz"; checksum="$archive.sha256"
     mkdir -p "$ROOT/.transfer"
@@ -83,9 +85,13 @@ transfer_image() {
         "$REMOTE_ROOT/.transfer" "$(basename "$checksum")" "$(basename "$archive")"
     printf -v quoted '%q' "$script"
     "${SSH[@]}" "$HOST" "bash -o pipefail -lc $quoted"
-    remote_id=$(remote docker image inspect "$IMAGE" --format '{{.Id}}')
-    [[ "$image_id" == "$remote_id" ]] || { echo "Image ID mismatch: local=$image_id remote=$remote_id" >&2; exit 1; }
-    echo "[cloud] verified identical image: $image_id"
+    remote_id=$(remote "$REMOTE_ROOT/container/image_identity.sh" "$IMAGE")
+    [[ "$image_id" == "$remote_id" ]] || { echo "Image configuration mismatch: local=$image_id remote=$remote_id" >&2; exit 1; }
+    local local_layers remote_layers
+    local_layers=$(docker image inspect "$IMAGE" --format '{{json .RootFS.Layers}}')
+    remote_layers=$(remote docker image inspect "$IMAGE" --format '{{json .RootFS.Layers}}')
+    [[ "$local_layers" == "$remote_layers" ]] || { echo 'Image filesystem layers differ' >&2; exit 1; }
+    echo "[cloud] verified identical image config and filesystem layers: $image_id"
 }
 case "$MODE" in
     push) push_source ;;

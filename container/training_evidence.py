@@ -53,8 +53,12 @@ elif args.mode == "audit":
     if int(manifest.get("world_size", 1)) > 1:
         rank_one = args.train_result.with_name(f"{args.train_result.stem}.rank1.json")
         other = json.loads(rank_one.read_text())
+        assert manifest["rank"] == 0 and other["rank"] == 1
+        assert int(other["world_size"]) == int(manifest["world_size"]) == 2
         assert other["passed"] and other["final_iteration"] == args.iteration
         assert other["iterations_completed"] == manifest["iterations_completed"]
+        assert other["start_iteration"] == manifest["start_iteration"]
+        assert Path(other["log_dir"]).resolve() == Path(manifest["log_dir"]).resolve()
     audit_path = args.report.parent / "checkpoint_audit.json"
     subprocess.run(["/isaac-sim/python.sh", "scripts/research/checkpoint_audit.py", new[0], "--tensorboard",
                     "--require_updates", "--output", str(audit_path)], check=True)

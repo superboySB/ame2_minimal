@@ -246,6 +246,17 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         runner = DistillationRunner(env, agent_cfg.to_dict(), log_dir=log_dir, device=agent_cfg.device)
     else:
         raise ValueError(f"Unsupported runner class: {agent_cfg.class_name}")
+    if args_cli.distributed:
+        # App startup can cross a wall-clock second on different workers.
+        # The runner has now initialized the process group, so all ranks can
+        # share rank 0's directory before writers/configuration files open.
+        shared_log_dir = [log_dir if training_result["rank"] == 0 else None]
+        torch.distributed.broadcast_object_list(shared_log_dir, src=0)
+        log_dir = shared_log_dir[0]
+        env_cfg.log_dir = log_dir
+        env.unwrapped.cfg.log_dir = log_dir
+        runner.logger.log_dir = log_dir
+        training_result["log_dir"] = log_dir
     training_result["critic_heads"] = getattr(runner.alg, "num_critic_heads", 1)
     # write git state to logs
     runner.add_git_repo_to_log(__file__)
@@ -258,8 +269,9 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     write_training_result()
 
     # dump the configuration into log-directory
-    dump_yaml(os.path.join(log_dir, "params", "env.yaml"), env_cfg)
-    dump_yaml(os.path.join(log_dir, "params", "agent.yaml"), agent_cfg)
+    if training_result["rank"] == 0:
+        dump_yaml(os.path.join(log_dir, "params", "env.yaml"), env_cfg)
+        dump_yaml(os.path.join(log_dir, "params", "agent.yaml"), agent_cfg)
 
     runner.learn(num_learning_iterations=agent_cfg.max_iterations, init_at_random_ep_len=True)
     final_checkpoint = os.path.join(log_dir, f"model_{runner.current_learning_iteration}.pt")
