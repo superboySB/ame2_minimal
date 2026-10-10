@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-10-10T10:03:15.209558+00:00",
+  "passed": true,
+  "source": {
+    "remote": "https://github.com/superboySB/ame2_minimal.git",
+    "branch": "research",
+    "commit": "26e3daec5190ab89e748b3591da61240369c5258",
+    "fresh_clone_clean": true
+  },
+  "clone": {
+    "git_lfs_skip_smudge": true,
+    "filter_lfs_process": "",
+    "filter_lfs_smudge": "",
+    "filter_lfs_clean": "",
+    "filter_lfs_required": false,
+    "host_packages_installed": false
+  },
+  "git_tree_scan": {
+    "blob_count": 286,
+    "blob_bytes_scanned": 146852018,
+    "lfs_pointer_paths": []
+  },
+  "runtime_assets": [
+    {
+      "path": "ame2/ame2/assets/g1_lidar/configuration/g1_lidar_base.usd",
+      "git_blob": "b54263e3ca4c2ef51cd2ddd4889c36cad8aaf149",
+      "bytes": 16109497,
+      "sha256": "45b2455c9adca7ae1d69fcc1132025d7392ac1d9a55cc1ce7ad8e06d9d31a894",
+      "matches_previous_lfs_oid_and_size": true
+    },
+    {
+      "path": "ame2/ame2/assets/g1_lidar/configuration/g1_lidar_physics.usd",
+      "git_blob": "1691f96db82fe5fa953baa7966ba71918feadf7f",
+      "bytes": 13174,
+      "sha256": "b3f3647399eb67c1df77ce1d8905a4e3d4399d17c7d28952586314541191dc7d",
+      "matches_previous_lfs_oid_and_size": true
+    },
+    {
+      "path": "ame2/ame2/assets/g1_lidar/configuration/g1_lidar_sensor.usd",
+      "git_blob": "45403a1089e6ef28bec167e11da0455596d53819",
+      "bytes": 656,
+      "sha256": "5115364b53bffbb37007af0fd1038336679b66abdae134bc87d0fca9829f9b60",
+      "matches_previous_lfs_oid_and_size": true
+    },
+    {
+      "path": "ame2/ame2/assets/g1_lidar/g1_lidar.usd",
+      "git_blob": "962b5d60255ebba6b0bd95722885bb02fb9b4aef",
+      "bytes": 1608,
+      "sha256": "9ab09316cf4f3780d22520be19fd78ed4e2d3087993372aa186df2e795bbf7a8",
+      "matches_previous_lfs_oid_and_size": true
+    },
+    {
+      "path": "ame2/ame2/sensors/mid360_raydirs.npy",
+      "git_blob": "158cc1942b0f4d38be174a56ecb06300a820c903",
+      "bytes": 9600128,
+      "sha256": "fb9263fb5c7a9711d0a9a212c7f25a0f2e4c0b02ea2e87778d6e8d601a94e930"
+    },
+    {
+      "path": "modelzoo/g1_gaze_64000env_10h/model_2400.pt",
+      "git_blob": "d4ed671e0eaa72f1e3b956b2d99928914a002c32",
+      "bytes": 82511415,
+      "sha256": "d93594ceb0115216873b74451c7bed969c05c1dc502603dbf47d2e6f3e9fbe05"
+    }
+  ],
+  "cpu_docker_probe": {
+    "image": "ame2:research",
+    "image_config_digest": "sha256:6333e6323c90d66b81746da1ca2add459fa30019790b7e63524a26d0797fad46",
+    "runtime": "runc",
+    "network": "none",
+    "gpu_devices": [],
+    "command": "/isaac-sim/python.sh /repo/technical_assets/probe_assets.py --repo-root /repo --check",
+    "repository_mount": "fresh GitHub clone mounted read-only at /repo",
+    "exit_code": 0,
+    "stdout": "Asset contracts match: /repo/technical_assets/asset_contracts.json\n",
+    "contract_path": "technical_assets/asset_contracts.json",
+    "contract_sha256": "c959cc6588ca222e3c292e71d335d32f9fd5874c7cda60ef63eef90f3f2705cd",
+    "script_sha256": "fd7d5d5282deb3b2e09ac17b520f1745563bb93967a1d8d45dbdf1a23fa97d6e",
+    "revolute_joints": 23
+  },
+  "scope": "Fresh-clone runtime asset availability and CPU OpenUSD/NumPy loading, using the existing verified image. Does not claim a new Docker build or a fresh-clone GPU policy run."
+}

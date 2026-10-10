@@ -35,6 +35,8 @@ nvidia-smi
 ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o BatchMode=yes -p 22 tencent-231 'id -un'
 ```
 
+2026-10-10 已实测从 GitHub 全新克隆，并禁用所有 LFS 下载过滤器；Git 树中没有剩余 LFS 指针，同一镜像在无网络、无 GPU 的 CPU 检查中成功加载四层 USD、23 个转动关节和 Mid360 NPY，且与原始资产哈希一致。具体命令、六个运行资产的 Git blob/大小/SHA 与检查范围见 [fresh-clone 资产报告](usage_assets/diagnostics/fresh_clone_assets.json)。
+
 已有 checkout 时跳过克隆，使用 `git switch research`。`tencent-231` 是本机已配置的 SSH 目标别名；换机器时先在 `~/.ssh/config` 中配置自己的服务器地址和用户，例如：
 
 ```sshconfig
