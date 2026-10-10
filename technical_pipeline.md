@@ -33,7 +33,7 @@ flowchart TD
 
 图中 teacher 路径直接使用仿真地形扫描，**不经过 Mid360 或 neural mapper**。Student 路径需要额外的未发布 mapper，图示表示代码的连接关系，不表示这条路径已通过端到端验收。[任务注册](ame2/ame2/tasks/__init__.py)、[环境配置](ame2/ame2/tasks/ame2_env_cfg.py)、[训练入口](ame2/scripts/rsl_rl/train.py)。
 
-下文 `B` 表示环境/样本 batch；位置为 m，角度为 rad，速度为 m/s 或 rad/s；四元数为 Isaac 的 `wxyz`。默认 physics 为 **200 Hz**，策略为 **50 Hz**，每回合 16 s，即 800 个策略步。训练 tensor 与 rollout storage 默认 FP32、位于 GPU；BF16 只覆盖更新中的部分计算。
+下文 `B` 表示环境/样本 batch；位置为 m，角度为 rad，速度为 m/s 或 rad/s；四元数为 Isaac 的 `wxyz`。默认 physics 为 **200 Hz**，策略为 **50 Hz**，完整回合时长上限为 16 s，即 800 个策略步；提前终止与训练首回合的随机计数例外见第 4.2 节。训练 tensor 与 rollout storage 默认 FP32、位于 GPU；BF16 只覆盖更新中的部分计算。
 
 ## 2. 强化学习的状态与观测
 
@@ -61,6 +61,8 @@ flowchart TD
 | `78:82` | commands | `(goal_x,goal_y,sin(yaw_error),cos(yaw_error))` | 见下面的内部随机化 |
 
 目标 xy 使用仅 yaw 的局部坐标系；它与完整姿态 body velocity 的坐标变换不同。目标距离超过 2 m 时，actor 将 xy 长度截到 2 m，并**每次观测调用重新随机化 yaw**；critic 保留完整 xy 和真实 yaw。该函数内部随机化不受 `enable_corruption=False` 控制。[观测实现](ame2/ame2/tasks/mdp/observations.py#L248)、[组装顺序](ame2/ame2/tasks/ame2_env_cfg.py#L242)。
+
+命令还有框架时序边界：每次 `step()` 先推进物理、计算终止与奖励，再 reset、更新相对目标命令，最后生成返回观测；因此正常步返回的 actor/critic 命令已更新，但本步奖励读的是更新前缓存。显式 `env.reset()` 只重采样 world goal，没有调用相对命令更新；初次构造环境时 raw body-command 缓存为零，对应上述四维 actor 命令 `(0,0,0,1)`，首个 step 结束才更新。之后再次显式 reset 也可能暂读旧缓存；step 内自动 reset 则会在生成返回观测前更新。部署或复刻首帧时不能假定显式 reset 已把相对命令算好。此顺序来自固定镜像内 `isaaclab/envs/manager_based_rl_env.py`、`manager_based_env.py` 与 `envs/mdp/commands/pose_2d_command.py`。
 
 动作历史还存在一个容易遗漏的时间偏移：接受 `a_t` 时框架先执行 `prev_action←action`、`action←a_t`，物理步结束后才生成新观测。因此，执行 `a_t` 后返回的观测包含 `a_{t-1}`；选择下一动作时，它并不是刚刚执行的 `a_t`。部署时应复制实际训练契约，不能凭“last action”名称猜测。
 
@@ -146,11 +148,11 @@ Motor saturation effort 为表中 effort 的 1.25 倍；armature 也在配置中
 所有奖励由模拟状态、接触与规则函数在线计算，**没有人工 reward label 文件**。设 `f_k` 为下表原始函数输出，控制步长 `dt=0.02 s`，实际 transition 的第 k 项奖励为：
 
 ```text
-r[t,k] = dt * weight[k] * f_k(state_after_action, action, history)
+r[t,k] = dt * weight[k] * f_k(physics_after_action, command_cache, action, history)
 scalar_reward[t] = sum_k r[t,k]
 ```
 
-奖励在物理步后、reset 前计算。`weight=-500` 的早停项激活一次实际贡献 -10，而不是 -500。Teacher 默认有 23 个 value head，顺序正是下面的奖励顺序；**23 个 head 与 23 个动作是两个不同概念**。[奖励配置](ame2/ame2/tasks/ame2_env_cfg.py#L413)、[奖励实现](ame2/ame2/tasks/mdp/rewards.py)。
+奖励在物理步后、reset 和本步 command 更新前计算，输入并非全来自同一时刻：速度、接触、关节与递增后的回合计数来自本步物理结果；前四项的 `d/psi/goal_xy` 则直接读相对命令缓存，在常规连续 step 中对应动作前状态，约滞后 20 ms。显式 reset 的缓存例外见第 2.1 节。`weight=-500` 的早停项激活一次实际贡献 -10，而不是 -500。Teacher 默认有 23 个 value head，顺序正是下面的奖励顺序；**23 个 head 与 23 个动作是两个不同概念**。[奖励配置](ame2/ame2/tasks/ame2_env_cfg.py#L413)、[奖励实现](ame2/ame2/tasks/mdp/rewards.py)。
 
 记 `I` 为条件指示函数，`[x]+ = max(x,0)`，`d` 为平面目标距离，`psi` 为 heading error，`t_left` 为剩余秒数。
 
@@ -188,7 +190,7 @@ scalar_reward[t] = sum_k r[t,k]
 
 | 条件 | 实际规则 |
 | --- | --- |
-| timeout | 800 个策略步，即 16 s |
+| timeout | 回合计数达到 800 个策略步，完整回合上限 16 s；训练首次回合有随机计数例外 |
 | gravity | t≥0.2 s，且 `abs(gx)>.985`、`abs(gy)>.7`、`gz>0` 任一成立 |
 | hip acceleration | t≥1 s，任一 hip_pitch 世界竖直加速度 `abs(az)>100 m/s²`，且同侧足最近 4 帧有接触 |
 | illegal contact | t≥1 s，torso 或 pelvis_contour 的 history 平均力模长 >400 N |
@@ -196,13 +198,15 @@ scalar_reward[t] = sum_k r[t,k]
 
 环境返回的 `terminated` 和 `truncated` 共同进入 RSL `dones`；timeout 另外放入 extras。Done 环境在返回 observation 前已经 reset，不能把返回的初始状态当成 terminal observation。
 
+训练入口调用 `learn(..., init_at_random_ep_len=True)`，将首次 `episode_length_buf` 随机设为 `0..799`，所以第一次 timeout 可能在实际 rollout 的第 1 至 800 步到来；后续正常 reset 从 0 计数。Stagnation 的目标距离同样读取本步更新前的命令缓存。[训练调用](ame2/scripts/rsl_rl/train.py#L276)、[初始计数](rsl_rl/rsl_rl/runners/on_policy_runner.py#L63)、[stagnation](ame2/ame2/tasks/mdp/terminations.py#L220)。独立推理评估不做这项训练计数随机化；新增首回合指标在 reset 前直接用 world goal/root pose 重算距离和 heading，见 [episode_metrics.py](ame2/scripts/research/episode_metrics.py)。
+
 ### 4.3 地形、目标与课程
 
 默认地形是 10×60 个 12×12 m tile，共 600 个；并非每个环境独立生成一张 600-tile 地图。16 种生成器中 12 种有训练采样权重，`pit/peak/test_1/test_2` 权重为零；各类型的实测视频见 usage。[地形配置](ame2/ame2/tasks/terrains.py)。
 
 目标从该 level/type 的有效 flat patches 中抽样，优先在相对 `env_origin` 的世界前锥内；无候选时回退任意有效 patch。目标 z 加默认 root 高度；world heading 从 `[-pi/3,pi/3]` 抽取，并不自动朝向目标。Flat patches 和 goal 是程序几何结果，不是人类动作示范标签。[目标采样](ame2/ame2/tasks/mdp/commands.py)。
 
-默认课程在 reset 时更新：terrain 依据终局到达情况及 EMA 升降级；另外在 `24*2000=48000` 个公共策略步内，将初始 yaw 从 0 扩到 ±pi、goal cone 从 10° 扩到 45°、地图 z noise 从 0 扩到 0.05 m。该计数不是所有并行环境的样本总和。[课程实现](ame2/ame2/tasks/mdp/curriculums.py#L175)。
+默认课程在 reset 时更新：terrain 依据目标距离及 EMA 升降级，这里的距离也是 command 更新前的缓存，并非重算本步 terminal pose 的精确距离；另外在 `24*2000=48000` 个公共策略步内，将初始 yaw 从 0 扩到 ±pi、goal cone 从 10° 扩到 45°、地图 z noise 从 0 扩到 0.05 m。该计数不是所有并行环境的样本总和。[课程实现](ame2/ame2/tasks/mdp/curriculums.py#L175)。
 
 ## 5. 网络内部怎么从观测变成动作
 
