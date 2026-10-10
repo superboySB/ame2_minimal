@@ -1,0 +1,756 @@
+{
+  "schema_version": 1,
+  "command": [
+    "scripts/research/checkpoint_audit.py",
+    "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_0.pt",
+    "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4999.pt",
+    "--tensorboard",
+    "--require_updates",
+    "--expected_heads",
+    "23",
+    "--output",
+    "/workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy/local_checkpoint_audit.json"
+  ],
+  "runs": [
+    {
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full",
+      "checkpoints": [
+        {
+          "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_0.pt",
+          "sha256": "41d9cfb01196aff788b92eec69d3bd84cf753f43c754936602adff7afb914de0",
+          "bytes": 82509875,
+          "iteration": 0,
+          "tensor_count": 358,
+          "nonfinite_tensors": [],
+          "actor_parameters": 1274544,
+          "critic_parameters": 9014144,
+          "critic_heads": 23,
+          "optimizer_kind": "muon_adamw",
+          "optimizer_parameter_groups": 2,
+          "optimizer_state_entries": 143,
+          "passed": true
+        },
+        {
+          "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4999.pt",
+          "sha256": "0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e",
+          "bytes": 82511607,
+          "iteration": 4999,
+          "tensor_count": 358,
+          "nonfinite_tensors": [],
+          "actor_parameters": 1274544,
+          "critic_parameters": 9014144,
+          "critic_heads": 23,
+          "optimizer_kind": "muon_adamw",
+          "optimizer_parameter_groups": 2,
+          "optimizer_state_entries": 143,
+          "passed": true,
+          "actor_change_from_first": {
+            "changed_tensors": 41,
+            "max_absolute_parameter_change": 1.2847623825073242
+          },
+          "critic_change_from_first": {
+            "changed_tensors": 102,
+            "max_absolute_parameter_change": 2.4458084106445312
+          }
+        }
+      ],
+      "passed": true,
+      "updates_proven": true,
+      "tensorboard": {
+        "tags": {
+          "Episode_Reward/ame2_position_tracking": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 2.254222869873047,
+            "last": 1.5873825550079346,
+            "finite": true
+          },
+          "Episode_Reward/ame2_heading_tracking": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 1.1071646213531494,
+            "last": 0.7731799483299255,
+            "finite": true
+          },
+          "Episode_Reward/ame2_move2goal": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.024680575355887413,
+            "maximum": 2.5199971199035645,
+            "last": 2.150744915008545,
+            "finite": true
+          },
+          "Episode_Reward/ame2_standatgoal": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.7967678308486938,
+            "last": 0.5612019300460815,
+            "finite": true
+          },
+          "Episode_Reward/early_termination_penalty": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.6507071852684021,
+            "maximum": -0.03038194589316845,
+            "last": -0.4698241651058197,
+            "finite": true
+          },
+          "Episode_Reward/undesired_spinning": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.037173084914684296,
+            "maximum": -0.002309635514393449,
+            "last": -0.03310825675725937,
+            "finite": true
+          },
+          "Episode_Reward/undesired_leaping": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.006674460135400295,
+            "maximum": -0.0017433655448257923,
+            "last": -0.0036798110231757164,
+            "finite": true
+          },
+          "Episode_Reward/undesired_non_foot_contacts": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.044346895068883896,
+            "maximum": -0.00045065314043313265,
+            "last": -0.024626053869724274,
+            "finite": true
+          },
+          "Episode_Reward/undesired_stumbling": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.04497666656970978,
+            "maximum": -0.00043380860006436706,
+            "last": -0.028377419337630272,
+            "finite": true
+          },
+          "Episode_Reward/undesired_slippage": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.09055808186531067,
+            "maximum": -0.005918340291827917,
+            "last": -0.07687302678823471,
+            "finite": true
+          },
+          "Episode_Reward/undesired_self_col_knee": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.00045164645416662097,
+            "maximum": 0.0,
+            "last": -1.201923078042455e-05,
+            "finite": true
+          },
+          "Episode_Reward/undesired_self_col_torso": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.004279946908354759,
+            "maximum": -1.1837121292046504e-06,
+            "last": -0.0012869562488049269,
+            "finite": true
+          },
+          "Episode_Reward/undesired_self_col_ankle": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.002641040598973632,
+            "maximum": 0.0,
+            "last": -0.0012098908191546798,
+            "finite": true
+          },
+          "Episode_Reward/base_roll_rate": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.03783490136265755,
+            "maximum": -0.002892147284001112,
+            "last": -0.03112252801656723,
+            "finite": true
+          },
+          "Episode_Reward/joint_regularization": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.6615908145904541,
+            "maximum": -0.07390736043453217,
+            "last": -0.5892252922058105,
+            "finite": true
+          },
+          "Episode_Reward/action_smoothness": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.10473915934562683,
+            "maximum": -0.006976084318011999,
+            "last": -0.08918657898902893,
+            "finite": true
+          },
+          "Episode_Reward/link_contact_forces": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.037972934544086456,
+            "maximum": -0.0013910200214013457,
+            "last": -0.025255724787712097,
+            "finite": true
+          },
+          "Episode_Reward/body_lin_acc_l1": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.1803331822156906,
+            "maximum": -0.010586773976683617,
+            "last": -0.15627117455005646,
+            "finite": true
+          },
+          "Episode_Reward/joint_pos_limits": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.3143649399280548,
+            "maximum": -0.003234829753637314,
+            "last": -0.1395905464887619,
+            "finite": true
+          },
+          "Episode_Reward/joint_vel_limits": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.0036668013781309128,
+            "maximum": 0.0,
+            "last": -0.0021639803890138865,
+            "finite": true
+          },
+          "Episode_Reward/joint_torque_limits": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.16700422763824463,
+            "maximum": -0.0023629639763385057,
+            "last": -0.11679159104824066,
+            "finite": true
+          },
+          "Episode_Reward/ame2_optional_uppershaping": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.13206815719604492,
+            "maximum": -0.0010773285757750273,
+            "last": -0.07423033565282822,
+            "finite": true
+          },
+          "Episode_Reward/ame2_optional_foot_shaping": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.08296827971935272,
+            "maximum": -0.000662492704577744,
+            "last": -0.07271429896354675,
+            "finite": true
+          },
+          "Curriculum/terrain_levels": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0126953125,
+            "maximum": 3.9495444297790527,
+            "last": 3.9495444297790527,
+            "finite": true
+          },
+          "Metrics/base_pose/error_pos": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "last": 0.0,
+            "finite": true
+          },
+          "Metrics/base_pose/error_heading": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.49570411443710327,
+            "maximum": 1.301438570022583,
+            "last": 0.7187355756759644,
+            "finite": true
+          },
+          "Episode_Termination/time_out": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.33172607421875,
+            "last": 0.31256103515625,
+            "finite": true
+          },
+          "Episode_Termination/early_gravity": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 7.120768714230508e-05,
+            "maximum": 0.9999288320541382,
+            "last": 0.6041056513786316,
+            "finite": true
+          },
+          "Episode_Termination/early_hip_acc": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.013946533203125,
+            "last": 0.008148193359375,
+            "finite": true
+          },
+          "Episode_Termination/early_illegal_contact": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 9.1552734375e-05,
+            "maximum": 0.0815633162856102,
+            "last": 0.0521341972053051,
+            "finite": true
+          },
+          "Episode_Termination/early_stagnation": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.0417887382209301,
+            "last": 0.0293680839240551,
+            "finite": true
+          },
+          "Log/SuccessRateReachEMA": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 3.634903142368806e-12,
+            "maximum": 0.293599933385849,
+            "last": 0.29293587803840637,
+            "finite": true
+          },
+          "Log/SuccessRate/Terrain_rough": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 2.1546949988127118e-11,
+            "maximum": 0.43887782096862793,
+            "last": 0.40774354338645935,
+            "finite": true
+          },
+          "Log/TerrainLevel/Terrain_rough": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.009756098501384258,
+            "maximum": 7.234357833862305,
+            "last": 7.023754119873047,
+            "finite": true
+          },
+          "Log/SuccessRate/Terrain_stair_down": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 5.00391785299148e-12,
+            "maximum": 0.3035631775856018,
+            "last": 0.15988102555274963,
+            "finite": true
+          },
+          "Log/TerrainLevel/Terrain_stair_down": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 5.629268646240234,
+            "last": 5.57560920715332,
+            "finite": true
+          },
+          "Log/SuccessRate/Terrain_stair_up": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.3027397394180298,
+            "last": 0.22469492256641388,
+            "finite": true
+          },
+          "Log/TerrainLevel/Terrain_stair_up": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 4.863414764404297,
+            "last": 4.863414764404297,
+            "finite": true
+          },
+          "Log/SuccessRate/Terrain_boxes": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.8573325872421265,
+            "last": 0.8489418029785156,
+            "finite": true
+          },
+          "Log/TerrainLevel/Terrain_boxes": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.24390245974063873,
+            "maximum": 6.70392370223999,
+            "last": 6.148674488067627,
+            "finite": true
+          },
+          "Log/SuccessRate/Terrain_obstacles": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.7089166641235352,
+            "last": 0.704795241355896,
+            "finite": true
+          },
+          "Log/TerrainLevel/Terrain_obstacles": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 7.173064708709717,
+            "last": 6.471261978149414,
+            "finite": true
+          },
+          "Log/SuccessRate/Terrain_climb_up": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 8.961187183059239e-16,
+            "maximum": 0.31025320291519165,
+            "last": 0.1289132833480835,
+            "finite": true
+          },
+          "Log/TerrainLevel/Terrain_climb_up": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 3.9500982761383057,
+            "last": 3.9500982761383057,
+            "finite": true
+          },
+          "Log/SuccessRate/Terrain_climb_down": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 1.2719077906783033e-13,
+            "maximum": 0.33913105726242065,
+            "last": 0.18189886212348938,
+            "finite": true
+          },
+          "Log/TerrainLevel/Terrain_climb_down": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 6.892683029174805,
+            "last": 6.887805461883545,
+            "finite": true
+          },
+          "Log/SuccessRate/Terrain_consecutive": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.4048248529434204,
+            "last": 0.3657945692539215,
+            "finite": true
+          },
+          "Log/TerrainLevel/Terrain_consecutive": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 6.068628311157227,
+            "last": 6.068628311157227,
+            "finite": true
+          },
+          "Log/SuccessRate/Terrain_gap": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.30202358961105347,
+            "last": 0.16586633026599884,
+            "finite": true
+          },
+          "Log/TerrainLevel/Terrain_gap": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 5.259385585784912,
+            "last": 5.259385585784912,
+            "finite": true
+          },
+          "Log/SuccessRate/Terrain_pallets": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 1.365700951714557e-14,
+            "maximum": 0.3711518943309784,
+            "last": 0.3274877369403839,
+            "finite": true
+          },
+          "Log/TerrainLevel/Terrain_pallets": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 3.750371217727661,
+            "last": 3.6969246864318848,
+            "finite": true
+          },
+          "Log/SuccessRate/Terrain_beam": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.37312814593315125,
+            "last": 0.22093942761421204,
+            "finite": true
+          },
+          "Log/TerrainLevel/Terrain_beam": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 7.890138149261475,
+            "last": 7.890138149261475,
+            "finite": true
+          },
+          "Log/SuccessRate/Terrain_stones": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.29096704721450806,
+            "last": 0.28908976912498474,
+            "finite": true
+          },
+          "Log/TerrainLevel/Terrain_stones": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 2.573219060897827,
+            "last": 0.5473374724388123,
+            "finite": true
+          },
+          "Curriculum/YawLimit": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0008508480386808515,
+            "maximum": 3.1415929794311523,
+            "last": 3.1415929794311523,
+            "finite": true
+          },
+          "Curriculum/GoalConeAngle": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 10.009479522705078,
+            "maximum": 45.0,
+            "last": 45.0,
+            "finite": true
+          },
+          "Curriculum/TeacherMappingNoise": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 1.3541668522520922e-05,
+            "maximum": 0.05000000074505806,
+            "last": 0.05000000074505806,
+            "finite": true
+          },
+          "Loss/value": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0031700669787824154,
+            "maximum": 0.91551673412323,
+            "last": 0.0606328547000885,
+            "finite": true
+          },
+          "Loss/surrogate": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -0.02221001125872135,
+            "maximum": 0.005848290864378214,
+            "last": -0.0012089357478544116,
+            "finite": true
+          },
+          "Loss/entropy": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 13.043875694274902,
+            "maximum": 32.52592468261719,
+            "last": 13.595958709716797,
+            "finite": true
+          },
+          "Loss/entropy_coef": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.002426062012091279,
+            "maximum": 0.003999600186944008,
+            "last": 0.002426062012091279,
+            "finite": true
+          },
+          "Loss/symmetry": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "last": 0.0,
+            "finite": true
+          },
+          "Loss/auxiliary": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.0,
+            "maximum": 1.1258060794716584e-06,
+            "last": 7.925665101993218e-08,
+            "finite": true
+          },
+          "Loss/learning_rate": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 9.999999747378752e-06,
+            "maximum": 0.0010000000474974513,
+            "last": 1.4999999621068127e-05,
+            "finite": true
+          },
+          "Policy/mean_std": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 0.43669483065605164,
+            "maximum": 0.9924723505973816,
+            "last": 0.4555652141571045,
+            "finite": true
+          },
+          "Perf/total_fps": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 7036.0,
+            "maximum": 15006.0,
+            "last": 14848.0,
+            "finite": true
+          },
+          "Perf/collection_time": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 2.9729857444763184,
+            "maximum": 9.446009635925293,
+            "last": 3.0388543605804443,
+            "finite": true
+          },
+          "Perf/learning_time": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 3.5699315071105957,
+            "maximum": 4.523926734924316,
+            "last": 3.5815224647521973,
+            "finite": true
+          },
+          "Train/mean_reward": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": -21.550493240356445,
+            "maximum": 90.34367370605469,
+            "last": 50.183406829833984,
+            "finite": true
+          },
+          "Train/mean_episode_length": {
+            "count": 5000,
+            "first_step": 0,
+            "last_step": 4999,
+            "minimum": 13.960000038146973,
+            "maximum": 493.25,
+            "last": 409.0,
+            "finite": true
+          },
+          "Train/mean_reward/time": {
+            "count": 5000,
+            "first_step": 13,
+            "last_step": 33258,
+            "minimum": -21.550493240356445,
+            "maximum": 90.34367370605469,
+            "last": 50.183406829833984,
+            "finite": true
+          },
+          "Train/mean_episode_length/time": {
+            "count": 5000,
+            "first_step": 13,
+            "last_step": 33258,
+            "minimum": 13.960000038146973,
+            "maximum": 493.25,
+            "last": 409.0,
+            "finite": true
+          },
+          "Metrics/base_pose/error_pos_2d": {
+            "count": 4999,
+            "first_step": 1,
+            "last_step": 4999,
+            "minimum": 1.594122290611267,
+            "maximum": 4.469947814941406,
+            "last": 1.9174237251281738,
+            "finite": true
+          }
+        },
+        "loss_tags": [
+          "Loss/auxiliary",
+          "Loss/entropy",
+          "Loss/entropy_coef",
+          "Loss/learning_rate",
+          "Loss/surrogate",
+          "Loss/symmetry",
+          "Loss/value"
+        ],
+        "passed": true
+      }
+    }
+  ],
+  "passed": true,
+  "limitations": [
+    "Gradients are not stored in checkpoints and cannot be inspected after saving.",
+    "Finite weights and finite losses do not establish policy quality or convergence."
+  ],
+  "wall_seconds": 4.464749076170847
+}

@@ -1,0 +1,907 @@
+{
+  "schema_version": 1,
+  "started_utc": "2026-10-10T14:25:40.138701+00:00",
+  "command": [
+    "scripts/research/verify.py",
+    "--headless",
+    "--task",
+    "Ame2-G1-Gaze-Play",
+    "--terrain",
+    "all",
+    "--num_envs",
+    "16",
+    "--steps",
+    "800",
+    "--seed",
+    "44",
+    "--difficulty",
+    "0.5",
+    "--checkpoint",
+    "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4999.pt",
+    "--policy",
+    "native",
+    "--first_episode",
+    "--report",
+    "/workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy/native_seed44/result.json",
+    "--export_jit"
+  ],
+  "arguments": {
+    "task": "Ame2-G1-Gaze-Play",
+    "terrain": "all",
+    "difficulty": 0.5,
+    "num_envs": 16,
+    "steps": 800,
+    "seed": 44,
+    "checkpoint": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4999.pt",
+    "policy": "native",
+    "export_jit": true,
+    "video": false,
+    "attention": false,
+    "mid360": false,
+    "first_episode": true,
+    "report": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy/native_seed44/result.json",
+    "enable_cameras": false,
+    "xr": false,
+    "device": "cuda:0",
+    "cpu": false,
+    "verbose": false,
+    "info": false,
+    "rendering_mode": null,
+    "kit_args": "",
+    "anim_recording_enabled": false,
+    "anim_recording_start_time": 0,
+    "anim_recording_stop_time": 10,
+    "headless": true,
+    "hide_ui": true,
+    "create_new_stage": false,
+    "physics_gpu": 0,
+    "active_gpu": 0
+  },
+  "python": "3.11.13",
+  "torch": "2.7.0+cu128",
+  "cuda": "12.8",
+  "passed": true,
+  "packages": {
+    "isaaclab": "0.54.2",
+    "rsl-rl-lib": "5.0.0",
+    "ame2": "0.1.0"
+  },
+  "combined_scene_patch_overrides": {
+    "target": {
+      "original_counts": [
+        10,
+        30
+      ],
+      "combined_scene_count": 10
+    }
+  },
+  "terrain_names": [
+    "rough",
+    "stair_down",
+    "stair_up",
+    "boxes",
+    "obstacles",
+    "climb_up",
+    "climb_down",
+    "consecutive",
+    "gap",
+    "pallets",
+    "beam",
+    "stones",
+    "pit",
+    "peak",
+    "test_1",
+    "test_2"
+  ],
+  "registered_tasks": [
+    "Ame2-G1",
+    "Ame2-G1-Gaze",
+    "Ame2-G1-Gaze-Play",
+    "Ame2-G1-Gaze-Student",
+    "Ame2-G1-Gaze-Student-Play",
+    "Ame2-G1-Play"
+  ],
+  "terrain_grid": {
+    "rows": 1,
+    "columns": 16,
+    "difficulty_range": [
+      0.5,
+      0.5
+    ],
+    "generator_curriculum": true,
+    "environment_terrain_curriculum": false
+  },
+  "observation_shapes": {
+    "teacher_mapping": [
+      16,
+      26,
+      15,
+      3
+    ],
+    "teacher_prop": [
+      16,
+      82
+    ],
+    "critic": [
+      16,
+      499
+    ]
+  },
+  "actions": 23,
+  "reward_terms": [
+    "ame2_position_tracking",
+    "ame2_heading_tracking",
+    "ame2_move2goal",
+    "ame2_standatgoal",
+    "early_termination_penalty",
+    "undesired_spinning",
+    "undesired_leaping",
+    "undesired_non_foot_contacts",
+    "undesired_stumbling",
+    "undesired_slippage",
+    "undesired_self_col_knee",
+    "undesired_self_col_torso",
+    "undesired_self_col_ankle",
+    "base_roll_rate",
+    "joint_regularization",
+    "action_smoothness",
+    "link_contact_forces",
+    "body_lin_acc_l1",
+    "joint_pos_limits",
+    "joint_vel_limits",
+    "joint_torque_limits",
+    "ame2_optional_uppershaping",
+    "ame2_optional_foot_shaping"
+  ],
+  "termination_terms": [
+    "time_out",
+    "early_gravity",
+    "early_hip_acc",
+    "early_illegal_contact",
+    "early_stagnation"
+  ],
+  "step_dt": 0.02,
+  "policy_mode": "native",
+  "checkpoint": {
+    "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4999.pt",
+    "sha256": "0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e",
+    "iteration": 4999
+  },
+  "critic_heads": 23,
+  "jit": {
+    "path": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy/native_seed44/result.jit",
+    "sha256": "26d802167186aa49efaacd73a4c98907c5f42244994858318df63a30d54c42cb",
+    "max_absolute_action_error": 4.76837158203125e-07,
+    "passed": true
+  },
+  "environments": [
+    {
+      "env_id": 0,
+      "terrain": "rough",
+      "terrain_column": 0,
+      "reward_sum": 233.10586547851562,
+      "minimum_goal_distance_m": 0.14627332985401154,
+      "final_goal_distance_m": 7.178036689758301,
+      "reached_goal": true,
+      "early_terminations": 0,
+      "timeouts": 1,
+      "initial_position": [
+        -0.03512878715991974,
+        -90.11539459228516,
+        0.9950000047683716
+      ],
+      "final_position": [
+        -0.01100851595401764,
+        -89.9298095703125,
+        0.9950000047683716
+      ]
+    },
+    {
+      "env_id": 1,
+      "terrain": "stair_down",
+      "terrain_column": 1,
+      "reward_sum": 250.00811767578125,
+      "minimum_goal_distance_m": 0.1344423145055771,
+      "final_goal_distance_m": 4.530325889587402,
+      "reached_goal": true,
+      "early_terminations": 0,
+      "timeouts": 1,
+      "initial_position": [
+        0.08333303034305573,
+        -78.02534484863281,
+        2.6999998092651367
+      ],
+      "final_position": [
+        0.02419118583202362,
+        -78.12246704101562,
+        2.6999998092651367
+      ]
+    },
+    {
+      "env_id": 2,
+      "terrain": "stair_up",
+      "terrain_column": 2,
+      "reward_sum": 221.453857421875,
+      "minimum_goal_distance_m": 0.03812229633331299,
+      "final_goal_distance_m": 4.135966777801514,
+      "reached_goal": true,
+      "early_terminations": 0,
+      "timeouts": 1,
+      "initial_position": [
+        -0.029792100191116333,
+        -66.1978988647461,
+        -0.8200000524520874
+      ],
+      "final_position": [
+        -0.06969723105430603,
+        -66.1585922241211,
+        -0.8200000524520874
+      ]
+    },
+    {
+      "env_id": 3,
+      "terrain": "boxes",
+      "terrain_column": 3,
+      "reward_sum": 205.9917449951172,
+      "minimum_goal_distance_m": 0.18029381334781647,
+      "final_goal_distance_m": 3.7645914554595947,
+      "reached_goal": true,
+      "early_terminations": 0,
+      "timeouts": 1,
+      "initial_position": [
+        0.056373074650764465,
+        -54.0045280456543,
+        0.7799999713897705
+      ],
+      "final_position": [
+        0.043125659227371216,
+        -53.8945426940918,
+        0.7799999713897705
+      ]
+    },
+    {
+      "env_id": 4,
+      "terrain": "obstacles",
+      "terrain_column": 4,
+      "reward_sum": 226.75265502929688,
+      "minimum_goal_distance_m": 0.010912507772445679,
+      "final_goal_distance_m": 4.4215006828308105,
+      "reached_goal": true,
+      "early_terminations": 0,
+      "timeouts": 1,
+      "initial_position": [
+        0.10713820159435272,
+        -42.19662857055664,
+        0.8299999833106995
+      ],
+      "final_position": [
+        0.10992281138896942,
+        -41.81016540527344,
+        0.8299999833106995
+      ]
+    },
+    {
+      "env_id": 5,
+      "terrain": "climb_up",
+      "terrain_column": 5,
+      "reward_sum": 27.90023422241211,
+      "minimum_goal_distance_m": 1.8904485702514648,
+      "final_goal_distance_m": 2.3897969722747803,
+      "reached_goal": false,
+      "early_terminations": 1,
+      "timeouts": 0,
+      "initial_position": [
+        -0.16642874479293823,
+        -30.078351974487305,
+        0.7799999713897705
+      ],
+      "final_position": [
+        1.3846241235733032,
+        -30.95991325378418,
+        0.7739886045455933
+      ]
+    },
+    {
+      "env_id": 6,
+      "terrain": "climb_down",
+      "terrain_column": 6,
+      "reward_sum": 42.415428161621094,
+      "minimum_goal_distance_m": 0.19932609796524048,
+      "final_goal_distance_m": 0.19932609796524048,
+      "reached_goal": true,
+      "early_terminations": 2,
+      "timeouts": 0,
+      "initial_position": [
+        0.015737682580947876,
+        -17.960294723510742,
+        1.3199999332427979
+      ],
+      "final_position": [
+        4.667624473571777,
+        -17.14088249206543,
+        0.7549200057983398
+      ]
+    },
+    {
+      "env_id": 7,
+      "terrain": "consecutive",
+      "terrain_column": 7,
+      "reward_sum": 231.19158935546875,
+      "minimum_goal_distance_m": 0.1545497179031372,
+      "final_goal_distance_m": 4.589009761810303,
+      "reached_goal": true,
+      "early_terminations": 0,
+      "timeouts": 1,
+      "initial_position": [
+        -0.013034135103225708,
+        -5.9491658210754395,
+        0.7799999713897705
+      ],
+      "final_position": [
+        0.16069622337818146,
+        -5.85952091217041,
+        0.7799999713897705
+      ]
+    },
+    {
+      "env_id": 8,
+      "terrain": "gap",
+      "terrain_column": 8,
+      "reward_sum": 47.50141906738281,
+      "minimum_goal_distance_m": 0.09656437486410141,
+      "final_goal_distance_m": 0.09656437486410141,
+      "reached_goal": true,
+      "early_terminations": 1,
+      "timeouts": 0,
+      "initial_position": [
+        -0.04884529113769531,
+        5.998293876647949,
+        0.7799999713897705
+      ],
+      "final_position": [
+        4.746001720428467,
+        3.562419891357422,
+        0.6207684874534607
+      ]
+    },
+    {
+      "env_id": 9,
+      "terrain": "pallets",
+      "terrain_column": 9,
+      "reward_sum": 243.2205352783203,
+      "minimum_goal_distance_m": 0.1989441215991974,
+      "final_goal_distance_m": 5.425111293792725,
+      "reached_goal": true,
+      "early_terminations": 0,
+      "timeouts": 1,
+      "initial_position": [
+        -0.13225579261779785,
+        18.126657485961914,
+        0.8799999952316284
+      ],
+      "final_position": [
+        -0.02239738404750824,
+        18.065231323242188,
+        0.8799999952316284
+      ]
+    },
+    {
+      "env_id": 10,
+      "terrain": "beam",
+      "terrain_column": 10,
+      "reward_sum": 254.19049072265625,
+      "minimum_goal_distance_m": 0.04807630926370621,
+      "final_goal_distance_m": 5.491535186767578,
+      "reached_goal": true,
+      "early_terminations": 0,
+      "timeouts": 1,
+      "initial_position": [
+        -0.15389209985733032,
+        30.02225685119629,
+        0.7799999713897705
+      ],
+      "final_position": [
+        -0.05400094389915466,
+        30.161985397338867,
+        0.7799999713897705
+      ]
+    },
+    {
+      "env_id": 11,
+      "terrain": "stones",
+      "terrain_column": 11,
+      "reward_sum": 6.668004512786865,
+      "minimum_goal_distance_m": 1.738918423652649,
+      "final_goal_distance_m": 6.039992332458496,
+      "reached_goal": false,
+      "early_terminations": 4,
+      "timeouts": 0,
+      "initial_position": [
+        -0.010292261838912964,
+        42.10548400878906,
+        0.9168549180030823
+      ],
+      "final_position": [
+        0.027352165430784225,
+        41.800575256347656,
+        0.831328272819519
+      ]
+    },
+    {
+      "env_id": 12,
+      "terrain": "pit",
+      "terrain_column": 12,
+      "reward_sum": -20.706253051757812,
+      "minimum_goal_distance_m": 1.2835139036178589,
+      "final_goal_distance_m": 4.560313701629639,
+      "reached_goal": false,
+      "early_terminations": 1,
+      "timeouts": 0,
+      "initial_position": [
+        0.03312268853187561,
+        53.829437255859375,
+        0.2799999713897705
+      ],
+      "final_position": [
+        0.9062635898590088,
+        53.57688522338867,
+        0.2561812400817871
+      ]
+    },
+    {
+      "env_id": 13,
+      "terrain": "peak",
+      "terrain_column": 13,
+      "reward_sum": -3.3315248489379883,
+      "minimum_goal_distance_m": 0.546901524066925,
+      "final_goal_distance_m": 0.546901524066925,
+      "reached_goal": false,
+      "early_terminations": 2,
+      "timeouts": 0,
+      "initial_position": [
+        -0.10630960762500763,
+        65.91004180908203,
+        1.7799999713897705
+      ],
+      "final_position": [
+        3.9682533740997314,
+        65.26190948486328,
+        0.7578916549682617
+      ]
+    },
+    {
+      "env_id": 14,
+      "terrain": "test_1",
+      "terrain_column": 14,
+      "reward_sum": 13.576262474060059,
+      "minimum_goal_distance_m": 1.6953312158584595,
+      "final_goal_distance_m": 3.1607272624969482,
+      "reached_goal": false,
+      "early_terminations": 3,
+      "timeouts": 0,
+      "initial_position": [
+        0.16682077944278717,
+        77.90584564208984,
+        1.7799999713897705
+      ],
+      "final_position": [
+        2.5043203830718994,
+        78.43001556396484,
+        1.7844737768173218
+      ]
+    },
+    {
+      "env_id": 15,
+      "terrain": "test_2",
+      "terrain_column": 15,
+      "reward_sum": 5.8341383934021,
+      "minimum_goal_distance_m": 1.8818849325180054,
+      "final_goal_distance_m": 3.7554209232330322,
+      "reached_goal": false,
+      "early_terminations": 4,
+      "timeouts": 0,
+      "initial_position": [
+        0.0853315144777298,
+        90.02497863769531,
+        0.8799999952316284
+      ],
+      "final_position": [
+        0.7538996934890747,
+        90.03038024902344,
+        0.8562050461769104
+      ]
+    }
+  ],
+  "first_episode": {
+    "scope": "initial reset through first terminated-or-timeout state, inclusive",
+    "sampling_phase": "after physics/reward computation and before automatic reset",
+    "position_threshold_m": 0.5,
+    "heading_threshold_rad": 0.5,
+    "success_definition": "First episode ends with timeout=true and terminated=false, and its pre-reset terminal planar goal distance is <0.5m and absolute wrapped heading error is <0.5rad. Censored episodes are not successful. This tests the terminal pose, not a dwell-time requirement.",
+    "duration_definition": "Elapsed first-episode simulation time; censored episodes show observed time only.",
+    "environments": [
+      {
+        "env_id": 0,
+        "ever_position_goal": true,
+        "ever_pose_goal": true,
+        "success": true,
+        "terminated": false,
+        "timeout": true,
+        "censored": false,
+        "episode_length_steps": 800,
+        "duration_seconds": 16.0,
+        "minimum_goal_distance_m": 0.14627332985401154,
+        "first_position_goal_step": 409,
+        "first_pose_goal_step": 409,
+        "terminal_goal_distance_m": 0.1564059853553772,
+        "terminal_heading_error_rad": -0.1062324047088623,
+        "terminal_position_goal": true,
+        "terminal_pose_goal": true,
+        "last_observed_goal_distance_m": 0.1564059853553772,
+        "last_observed_heading_error_rad": -0.1062324047088623,
+        "terminal_terms": [
+          "time_out"
+        ]
+      },
+      {
+        "env_id": 1,
+        "ever_position_goal": true,
+        "ever_pose_goal": true,
+        "success": true,
+        "terminated": false,
+        "timeout": true,
+        "censored": false,
+        "episode_length_steps": 800,
+        "duration_seconds": 16.0,
+        "minimum_goal_distance_m": 0.1344423145055771,
+        "first_position_goal_step": 289,
+        "first_pose_goal_step": 289,
+        "terminal_goal_distance_m": 0.37627455592155457,
+        "terminal_heading_error_rad": -0.12084412574768066,
+        "terminal_position_goal": true,
+        "terminal_pose_goal": true,
+        "last_observed_goal_distance_m": 0.37627455592155457,
+        "last_observed_heading_error_rad": -0.12084412574768066,
+        "terminal_terms": [
+          "time_out"
+        ]
+      },
+      {
+        "env_id": 2,
+        "ever_position_goal": true,
+        "ever_pose_goal": true,
+        "success": true,
+        "terminated": false,
+        "timeout": true,
+        "censored": false,
+        "episode_length_steps": 800,
+        "duration_seconds": 16.0,
+        "minimum_goal_distance_m": 0.03812229633331299,
+        "first_position_goal_step": 152,
+        "first_pose_goal_step": 152,
+        "terminal_goal_distance_m": 0.49521511793136597,
+        "terminal_heading_error_rad": -0.04657554626464844,
+        "terminal_position_goal": true,
+        "terminal_pose_goal": true,
+        "last_observed_goal_distance_m": 0.49521511793136597,
+        "last_observed_heading_error_rad": -0.04657554626464844,
+        "terminal_terms": [
+          "time_out"
+        ]
+      },
+      {
+        "env_id": 3,
+        "ever_position_goal": true,
+        "ever_pose_goal": true,
+        "success": true,
+        "terminated": false,
+        "timeout": true,
+        "censored": false,
+        "episode_length_steps": 800,
+        "duration_seconds": 16.0,
+        "minimum_goal_distance_m": 0.18029381334781647,
+        "first_position_goal_step": 651,
+        "first_pose_goal_step": 701,
+        "terminal_goal_distance_m": 0.20208746194839478,
+        "terminal_heading_error_rad": -0.3386855125427246,
+        "terminal_position_goal": true,
+        "terminal_pose_goal": true,
+        "last_observed_goal_distance_m": 0.20208746194839478,
+        "last_observed_heading_error_rad": -0.3386855125427246,
+        "terminal_terms": [
+          "time_out"
+        ]
+      },
+      {
+        "env_id": 4,
+        "ever_position_goal": true,
+        "ever_pose_goal": true,
+        "success": true,
+        "terminated": false,
+        "timeout": true,
+        "censored": false,
+        "episode_length_steps": 800,
+        "duration_seconds": 16.0,
+        "minimum_goal_distance_m": 0.010912507772445679,
+        "first_position_goal_step": 621,
+        "first_pose_goal_step": 656,
+        "terminal_goal_distance_m": 0.13170704245567322,
+        "terminal_heading_error_rad": -0.13593673706054688,
+        "terminal_position_goal": true,
+        "terminal_pose_goal": true,
+        "last_observed_goal_distance_m": 0.13170704245567322,
+        "last_observed_heading_error_rad": -0.13593673706054688,
+        "terminal_terms": [
+          "time_out"
+        ]
+      },
+      {
+        "env_id": 5,
+        "ever_position_goal": false,
+        "ever_pose_goal": false,
+        "success": false,
+        "terminated": true,
+        "timeout": false,
+        "censored": false,
+        "episode_length_steps": 333,
+        "duration_seconds": 6.66,
+        "minimum_goal_distance_m": 1.8757965564727783,
+        "first_position_goal_step": null,
+        "first_pose_goal_step": null,
+        "terminal_goal_distance_m": 1.8757965564727783,
+        "terminal_heading_error_rad": -0.834233283996582,
+        "terminal_position_goal": false,
+        "terminal_pose_goal": false,
+        "last_observed_goal_distance_m": 1.8757965564727783,
+        "last_observed_heading_error_rad": -0.834233283996582,
+        "terminal_terms": [
+          "early_gravity"
+        ]
+      },
+      {
+        "env_id": 6,
+        "ever_position_goal": false,
+        "ever_pose_goal": false,
+        "success": false,
+        "terminated": true,
+        "timeout": false,
+        "censored": false,
+        "episode_length_steps": 207,
+        "duration_seconds": 4.14,
+        "minimum_goal_distance_m": 1.4137933254241943,
+        "first_position_goal_step": null,
+        "first_pose_goal_step": null,
+        "terminal_goal_distance_m": 1.4137933254241943,
+        "terminal_heading_error_rad": -0.46486735343933105,
+        "terminal_position_goal": false,
+        "terminal_pose_goal": false,
+        "last_observed_goal_distance_m": 1.4137933254241943,
+        "last_observed_heading_error_rad": -0.46486735343933105,
+        "terminal_terms": [
+          "early_gravity"
+        ]
+      },
+      {
+        "env_id": 7,
+        "ever_position_goal": true,
+        "ever_pose_goal": true,
+        "success": true,
+        "terminated": false,
+        "timeout": true,
+        "censored": false,
+        "episode_length_steps": 800,
+        "duration_seconds": 16.0,
+        "minimum_goal_distance_m": 0.1545497179031372,
+        "first_position_goal_step": 506,
+        "first_pose_goal_step": 534,
+        "terminal_goal_distance_m": 0.19573107361793518,
+        "terminal_heading_error_rad": -0.11259198188781738,
+        "terminal_position_goal": true,
+        "terminal_pose_goal": true,
+        "last_observed_goal_distance_m": 0.19573107361793518,
+        "last_observed_heading_error_rad": -0.11259198188781738,
+        "terminal_terms": [
+          "time_out"
+        ]
+      },
+      {
+        "env_id": 8,
+        "ever_position_goal": false,
+        "ever_pose_goal": false,
+        "success": false,
+        "terminated": true,
+        "timeout": false,
+        "censored": false,
+        "episode_length_steps": 237,
+        "duration_seconds": 4.74,
+        "minimum_goal_distance_m": 2.354112148284912,
+        "first_position_goal_step": null,
+        "first_pose_goal_step": null,
+        "terminal_goal_distance_m": 2.354112148284912,
+        "terminal_heading_error_rad": -0.019922494888305664,
+        "terminal_position_goal": false,
+        "terminal_pose_goal": false,
+        "last_observed_goal_distance_m": 2.354112148284912,
+        "last_observed_heading_error_rad": -0.019922494888305664,
+        "terminal_terms": [
+          "early_gravity"
+        ]
+      },
+      {
+        "env_id": 9,
+        "ever_position_goal": true,
+        "ever_pose_goal": true,
+        "success": true,
+        "terminated": false,
+        "timeout": true,
+        "censored": false,
+        "episode_length_steps": 800,
+        "duration_seconds": 16.0,
+        "minimum_goal_distance_m": 0.1989441215991974,
+        "first_position_goal_step": 429,
+        "first_pose_goal_step": 429,
+        "terminal_goal_distance_m": 0.21256794035434723,
+        "terminal_heading_error_rad": -0.0633854866027832,
+        "terminal_position_goal": true,
+        "terminal_pose_goal": true,
+        "last_observed_goal_distance_m": 0.21256794035434723,
+        "last_observed_heading_error_rad": -0.0633854866027832,
+        "terminal_terms": [
+          "time_out"
+        ]
+      },
+      {
+        "env_id": 10,
+        "ever_position_goal": true,
+        "ever_pose_goal": true,
+        "success": true,
+        "terminated": false,
+        "timeout": true,
+        "censored": false,
+        "episode_length_steps": 800,
+        "duration_seconds": 16.0,
+        "minimum_goal_distance_m": 0.04807630926370621,
+        "first_position_goal_step": 376,
+        "first_pose_goal_step": 376,
+        "terminal_goal_distance_m": 0.0916799008846283,
+        "terminal_heading_error_rad": -0.08971047401428223,
+        "terminal_position_goal": true,
+        "terminal_pose_goal": true,
+        "last_observed_goal_distance_m": 0.0916799008846283,
+        "last_observed_heading_error_rad": -0.08971047401428223,
+        "terminal_terms": [
+          "time_out"
+        ]
+      },
+      {
+        "env_id": 11,
+        "ever_position_goal": false,
+        "ever_pose_goal": false,
+        "success": false,
+        "terminated": true,
+        "timeout": false,
+        "censored": false,
+        "episode_length_steps": 172,
+        "duration_seconds": 3.44,
+        "minimum_goal_distance_m": 3.876673460006714,
+        "first_position_goal_step": null,
+        "first_pose_goal_step": null,
+        "terminal_goal_distance_m": 3.876673460006714,
+        "terminal_heading_error_rad": -0.8128299713134766,
+        "terminal_position_goal": false,
+        "terminal_pose_goal": false,
+        "last_observed_goal_distance_m": 3.876673460006714,
+        "last_observed_heading_error_rad": -0.8128299713134766,
+        "terminal_terms": [
+          "early_gravity"
+        ]
+      },
+      {
+        "env_id": 12,
+        "ever_position_goal": false,
+        "ever_pose_goal": false,
+        "success": false,
+        "terminated": true,
+        "timeout": false,
+        "censored": false,
+        "episode_length_steps": 502,
+        "duration_seconds": 10.040000000000001,
+        "minimum_goal_distance_m": 1.2835139036178589,
+        "first_position_goal_step": null,
+        "first_pose_goal_step": null,
+        "terminal_goal_distance_m": 1.285999059677124,
+        "terminal_heading_error_rad": 0.2408139705657959,
+        "terminal_position_goal": false,
+        "terminal_pose_goal": false,
+        "last_observed_goal_distance_m": 1.285999059677124,
+        "last_observed_heading_error_rad": 0.2408139705657959,
+        "terminal_terms": [
+          "early_stagnation"
+        ]
+      },
+      {
+        "env_id": 13,
+        "ever_position_goal": false,
+        "ever_pose_goal": false,
+        "success": false,
+        "terminated": true,
+        "timeout": false,
+        "censored": false,
+        "episode_length_steps": 224,
+        "duration_seconds": 4.48,
+        "minimum_goal_distance_m": 2.533402681350708,
+        "first_position_goal_step": null,
+        "first_pose_goal_step": null,
+        "terminal_goal_distance_m": 2.533402681350708,
+        "terminal_heading_error_rad": 2.481924295425415,
+        "terminal_position_goal": false,
+        "terminal_pose_goal": false,
+        "last_observed_goal_distance_m": 2.533402681350708,
+        "last_observed_heading_error_rad": 2.481924295425415,
+        "terminal_terms": [
+          "early_gravity"
+        ]
+      },
+      {
+        "env_id": 14,
+        "ever_position_goal": false,
+        "ever_pose_goal": false,
+        "success": false,
+        "terminated": true,
+        "timeout": false,
+        "censored": false,
+        "episode_length_steps": 253,
+        "duration_seconds": 5.0600000000000005,
+        "minimum_goal_distance_m": 1.6893771886825562,
+        "first_position_goal_step": null,
+        "first_pose_goal_step": null,
+        "terminal_goal_distance_m": 1.6893771886825562,
+        "terminal_heading_error_rad": 0.3845493793487549,
+        "terminal_position_goal": false,
+        "terminal_pose_goal": false,
+        "last_observed_goal_distance_m": 1.6893771886825562,
+        "last_observed_heading_error_rad": 0.3845493793487549,
+        "terminal_terms": [
+          "early_gravity"
+        ]
+      },
+      {
+        "env_id": 15,
+        "ever_position_goal": false,
+        "ever_pose_goal": false,
+        "success": false,
+        "terminated": true,
+        "timeout": false,
+        "censored": false,
+        "episode_length_steps": 165,
+        "duration_seconds": 3.3000000000000003,
+        "minimum_goal_distance_m": 2.7623608112335205,
+        "first_position_goal_step": null,
+        "first_pose_goal_step": null,
+        "terminal_goal_distance_m": 2.7623608112335205,
+        "terminal_heading_error_rad": 0.615025520324707,
+        "terminal_position_goal": false,
+        "terminal_pose_goal": false,
+        "last_observed_goal_distance_m": 2.7623608112335205,
+        "last_observed_heading_error_rad": 0.615025520324707,
+        "terminal_terms": [
+          "early_gravity"
+        ]
+      }
+    ],
+    "summary": {
+      "num_environments": 16,
+      "ever_position_goal": 8,
+      "ever_pose_goal": 8,
+      "successes": 8,
+      "terminated": 8,
+      "timeouts": 8,
+      "censored": 0
+    }
+  },
+  "steps_completed": 800,
+  "simulation_seconds": 16.0,
+  "finite_checks_passed": true,
+  "videos": [],
+  "wall_seconds": 27.057191951898858
+}

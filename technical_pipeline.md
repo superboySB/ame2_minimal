@@ -2,7 +2,7 @@
 
 本文解释当前 `research` 分支的实际代码与数据契约。安装和运行命令见 [note.md](note.md)，实测结果、图像和视频见 [usage.md](usage.md)。本文独立新增，不修改 README。
 
-**已经跑通的主路径是 G1 的仿真 teacher 训练与推理。** Student 的网络、蒸馏和 LiDAR 地图接口存在，但其神经建图权重未发布；真实 G1 驱动、LIO 和真机控制程序也不在本仓库。因此，本仓库提供了 real→sim→real 的部分组件，不能据此声称已经完成真机闭环。完整 5000 次云端训练的验收状态以 `usage.md` 及该次运行的最终审计为准，不能用发布的 `model_2400.pt` 代替新训练结果。
+**已经跑通的主路径是 G1 的仿真 teacher 训练与推理。** 本次单卡 4096 环境的 gaze teacher 已完成 5000 次 fresh 更新，末迭代 4999，[终态监控](usage_assets/diagnostics/full_completed_training/monitor_result.json)与[checkpoint / TensorBoard 审计](usage_assets/diagnostics/full_completed_training/checkpoint_audit.json)通过；[最终权重、实际配置与来源](modelzoo/g1_gaze_research_4096env_5000/provenance.json)随 Git 提供，策略表现另见 [usage.md](usage.md#3-两种-teacher-训练)。Student 的网络、蒸馏和 LiDAR 地图接口存在，但其神经建图权重未发布；真实 G1 驱动、LIO 和真机控制程序也不在本仓库。因此，本仓库提供了 real→sim→real 的部分组件，不能据此声称已经完成真机闭环。
 
 ## 1. 先看完整数据流
 
@@ -437,7 +437,9 @@ RealSense/ZEDX ray pattern helper 也存在，但没有接入已注册 G1 任务
 | `mid360_raydirs.npy` | 单位扫描方向，不是原始实测点云数据集 |
 | `IO_descriptors.yaml` | 本次导出的关节 action 元数据；没有完整 observation schema |
 
-发布 checkpoint `modelzoo/g1_gaze_64000env_10h/model_2400.pt` 实读为 iter=2400，actor 参数 FP32，critic 首层 `[512,499]`，optimizer 同时有 Muon 和 AdamW 两组。其配套记录是每 worker16000、4 worker=64000 env；不同于当前源码 4096 env、5000 次计划，不能将二者混成同一训练配置。
+上游发布 checkpoint `modelzoo/g1_gaze_64000env_10h/model_2400.pt` 实读为 iter=2400，actor 参数 FP32，critic 首层 `[512,499]`，optimizer 同时有 Muon 和 AdamW 两组。其配套记录是每 worker16000、4 worker=64000 env；本次 `modelzoo/g1_gaze_research_4096env_5000/model_4999.pt` 则为单卡4096环境、5000次fresh更新、seed42、Muon/BF16与23个critic heads，保存间隔改为200。两者分别保存实际 YAML 与来源，不能混成同一配置或假定具有相同运动能力。新权重 SHA256 为 `0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e`；精确文件大小、配置哈希、原始训练源码 manifest 与数值审计见其 [provenance.json](modelzoo/g1_gaze_research_4096env_5000/provenance.json)。
+
+本次[独立评估](usage_assets/diagnostics/final_policy_evaluation/summary.json)已重新加载最终权重并完成 8 项执行检查。Difficulty 0.5 的三 seed、16 地形 native 首回合严格成功合计 28/48；该指标要求 timeout 时终点位置误差 <0.5 m、wrapped heading error 绝对值 <0.5 rad 且无 early termination，没有附加停留时间要求。JIT 的初始同观测动作误差最大 `4.76837158203125e-7`，不是全轨迹等价保证。完整[训练曲线与原始数据](usage_assets/final_policy/training_curves/curves.json)记录 75 项实际 scalar tag，7 项 Loss 各为精确 0–4999 序列；训练审计、首回合策略表现和真实硬件闭环是不同层面的证据。
 
 ### 9.2 JIT 的精确调用
 

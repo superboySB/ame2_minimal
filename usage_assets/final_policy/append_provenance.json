@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-10T14:32:01.097729+00:00",
+  "scope": "Append two audited final model_4999 videos and copy complete actual training curves; historical evidence remains byte-identical",
+  "evaluation_summary": {
+    "path": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy/summary.json",
+    "sha256": "21d3fa819454df995ed7ae88940b2dd7c9cfa692e6971bb8371584058cae2fdc"
+  },
+  "videos_before": 22,
+  "videos_after": 24,
+  "appended_video_ids": [
+    "final-policy-climb_up_attention_video-result",
+    "final-policy-rough_video-result"
+  ],
+  "preserved_sha256": {
+    "validation_snapshot.json": "052692479eac4362057ecd26d915bae5fdbb36eb187874fad43ef41c8f3aefc8",
+    "diagnostics/provenance.json": "a597a14b0ab387783006602e99094e44601736449e2444d84bbad35f1b619374",
+    "diagnostics/browser_result.json": "5a069fef0f39b7e060b09b849d8ef2328c8ced2c95d0dea5db249201f9444cee"
+  },
+  "new_evidence_snapshot": {
+    "path": "final_policy/validation_snapshot.json",
+    "sha256": "b0b4e927807c95d8358d8ee913d58557881dd0c770a188ea89daad8c84a009a4"
+  },
+  "training_curve_files": [
+    {
+      "path": "final_policy/training_curves/curves.json",
+      "bytes": 46975355,
+      "sha256": "0230e417acd43961dee93217266b86dc476cbf2cdabbe730e8c80269f20e3551",
+      "source": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy/training_curves/curves.json",
+      "source_sha256": "0230e417acd43961dee93217266b86dc476cbf2cdabbe730e8c80269f20e3551"
+    },
+    {
+      "path": "final_policy/training_curves/training_curves.png",
+      "bytes": 528667,
+      "sha256": "eca3f5414481ec1b92c2ef548cc8918220e24c9fa7c8a7c82ae408d6298fd604",
+      "source": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy/training_curves/training_curves.png",
+      "source_sha256": "eca3f5414481ec1b92c2ef548cc8918220e24c9fa7c8a7c82ae408d6298fd604"
+    },
+    {
+      "path": "final_policy/training_curves/training_curves.svg",
+      "bytes": 1007000,
+      "sha256": "d4cfee4262d0203f060bb32a90256cebd079e573ffd2a0781917b0d1c27e66b6",
+      "source": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy/training_curves/training_curves.svg",
+      "source_sha256": "d4cfee4262d0203f060bb32a90256cebd079e573ffd2a0781917b0d1c27e66b6"
+    }
+  ],
+  "manifest_sha256": "f94ebe133a6ac0b2500f4c3a4c2b9bc4252d17d9a393d92487084812e38b62fb",
+  "manifest_js_sha256": "82e45cf608f1b68024cd5af54887926f653d0bbe48bf25c23e5b41e41754263d",
+  "browser_final24": {
+    "report": "diagnostics/browser_final24.json",
+    "sha256": "b83418a6a4be0f2bd0305c1fc38a41d20a1854d83ba4c3e2a7837d46b867886b",
+    "videos": 24,
+    "cards": 24,
+    "interaction_checks_passed": 10,
+    "runtime": "runc",
+    "CUDA_VISIBLE_DEVICES": "",
+    "NVIDIA_VISIBLE_DEVICES": "void",
+    "dedicated_chrome_ephemeral_cdp_port": 35367,
+    "dedicated_browser_exited": true,
+    "dedicated_cdp_port_closed": true,
+    "temporary_profile_removed": true,
+    "verified_utc": "2026-10-10T14:33:33.110421+00:00"
+  }
+}

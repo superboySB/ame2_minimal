@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "kind": "final_policy_evaluation_evidence_copy",
+  "passed": true,
+  "source_directory": "outputs/research/reproduce-20261010/full-final-policy",
+  "files": [
+    {
+      "path": "usage_assets/diagnostics/final_policy_evaluation/summary.json",
+      "source": "outputs/research/reproduce-20261010/full-final-policy/summary.json",
+      "sha256": "21d3fa819454df995ed7ae88940b2dd7c9cfa692e6971bb8371584058cae2fdc",
+      "bytes": 24956
+    },
+    {
+      "path": "usage_assets/diagnostics/final_policy_evaluation/local_checkpoint_audit.json",
+      "source": "outputs/research/reproduce-20261010/full-final-policy/local_checkpoint_audit.json",
+      "sha256": "f5765529ef4f12ac4c9b9ca75c75d201c284f6477f69490a268f8bc16244b07b",
+      "bytes": 24788
+    },
+    {
+      "path": "usage_assets/diagnostics/final_policy_evaluation/native_seed42/result.json",
+      "source": "outputs/research/reproduce-20261010/full-final-policy/native_seed42/result.json",
+      "sha256": "ea1248c080d8cba68b71e3ab0b04c0091f634f83c97ae366215035219e9b39b9",
+      "bytes": 26810
+    },
+    {
+      "path": "usage_assets/diagnostics/final_policy_evaluation/native_seed43/result.json",
+      "source": "outputs/research/reproduce-20261010/full-final-policy/native_seed43/result.json",
+      "sha256": "3c91524bcd3104d15f879f5bbf98a822d928c91861f2d7f978a480b065c8d55d",
+      "bytes": 26779
+    },
+    {
+      "path": "usage_assets/diagnostics/final_policy_evaluation/native_seed44/result.json",
+      "source": "outputs/research/reproduce-20261010/full-final-policy/native_seed44/result.json",
+      "sha256": "90fa3d4dd90c27225ffbc74df470fc1043ccb386ba96e00ca746efe48e94d38f",
+      "bytes": 26831
+    },
+    {
+      "path": "usage_assets/diagnostics/final_policy_evaluation/jit_seed42/result.json",
+      "source": "outputs/research/reproduce-20261010/full-final-policy/jit_seed42/result.json",
+      "sha256": "a0b187accdff65e2424e803295ec7512877777c1760c478c76dd60a0051a3876",
+      "bytes": 26771
+    },
+    {
+      "path": "usage_assets/diagnostics/final_policy_evaluation/rough_video/result.json",
+      "source": "outputs/research/reproduce-20261010/full-final-policy/rough_video/result.json",
+      "sha256": "e24de70d5ead379c7f1dac9f78591360d4e4e93d96565fe04126326f1e9e787d",
+      "bytes": 6308
+    },
+    {
+      "path": "usage_assets/diagnostics/final_policy_evaluation/climb_up_attention_video/result.json",
+      "source": "outputs/research/reproduce-20261010/full-final-policy/climb_up_attention_video/result.json",
+      "sha256": "b9bd186ceeea4320e852ca436f509ce7b15a2736b5546e8a8cc98832af851c00",
+      "bytes": 6387
+    }
+  ],
+  "scope": "Exact original reports for final model_4999.pt; execution checks and first-episode task quality are reported separately."
+}

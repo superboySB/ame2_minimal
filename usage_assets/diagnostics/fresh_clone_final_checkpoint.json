@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "kind": "fresh_github_clone_final_checkpoint_cpu_contract",
+  "passed": true,
+  "as_of_utc": "2026-10-10T14:29:52.937678+00:00",
+  "container": {
+    "image": "ame2:research",
+    "config_digest": "sha256:6333e6323c90d66b81746da1ca2add459fa30019790b7e63524a26d0797fad46",
+    "runtime": "runc",
+    "network": "none",
+    "nvidia_visible_devices": "void",
+    "cuda_visible_devices": ""
+  },
+  "git": {
+    "commit": "c084d774724296241990b2f319047e43800e3eae",
+    "origin": "https://github.com/superboySB/ame2_minimal",
+    "branch": "research",
+    "local_clone": false,
+    "alternates": false,
+    "lfs_filters_disabled_during_clone": true,
+    "head_tracked_blob_paths": 303,
+    "head_unique_blobs": 300,
+    "lfs_pointer_head_paths": [],
+    "head_lfs_pointer_blobs": [],
+    "checked_out_head_no_lfs_pointers": true
+  },
+  "published_files": {
+    "model_4999.pt": {
+      "sha256": "0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e",
+      "bytes": 82511607,
+      "matches_provenance": true
+    },
+    "params/env.yaml": {
+      "sha256": "96827549bc911643952a979227ef9f68adfdc6900e8efa41d0156f0f1ef7dd5f",
+      "bytes": 78434,
+      "matches_provenance": true
+    },
+    "params/agent.yaml": {
+      "sha256": "5a72381565cf9db7ce76a0ae8f9c0937a02efc312244f3c03f7c9aa12af70695",
+      "bytes": 1409,
+      "matches_provenance": true
+    }
+  },
+  "published_training_evidence_hashes_match_provenance": true,
+  "asset_probe": {
+    "command": [
+      "/isaac-sim/kit/python/bin/python3",
+      "-B",
+      "/workspace/ame2-minimal/technical_assets/probe_assets.py",
+      "--repo-root",
+      "/workspace/ame2-minimal",
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "Asset contracts match: /workspace/ame2-minimal/technical_assets/asset_contracts.json\n",
+    "stderr": "",
+    "passed": true
+  },
+  "checkpoint_contract": {
+    "passed": true,
+    "sha256": "0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e",
+    "iteration": 4999,
+    "keys": [
+      "actor_state_dict",
+      "critic_state_dict",
+      "infos",
+      "iter",
+      "optimizer_state_dict"
+    ],
+    "tensor_count": 358,
+    "tensor_devices": [
+      "cpu"
+    ],
+    "tensor_dtypes": {
+      "torch.float32": 358
+    },
+    "nonfinite_tensors_or_scalars": [],
+    "critic_heads": 23,
+    "optimizer_kind": "muon_adamw",
+    "optimizer_state_entries": 143,
+    "optimizer_parameter_groups": [
+      {
+        "use_muon": true,
+        "parameters": 71,
+        "learning_rate": 1.5000000000000005e-05
+      },
+      {
+        "use_muon": false,
+        "parameters": 72,
+        "learning_rate": 1.5000000000000005e-05
+      }
+    ],
+    "actor_parameters": 1274544,
+    "critic_parameters": 9014144,
+    "saved_configuration": {
+      "seed": 42,
+      "max_iterations": 5000,
+      "num_envs": 4096,
+      "terrain_rows": 10,
+      "terrain_columns": 60,
+      "mixed_precision": true
+    },
+    "mixed_precision_scope": "Saved config/provenance records BF16 autocast; stored tensor dtypes do not independently prove runtime precision."
+  },
+  "cuda_initialized": false,
+  "wall_seconds": 2.2108664161060005,
+  "historical_audit": {
+    "kind": "independent_all_cloned_git_history_audit",
+    "passed": false,
+    "scope": "All cloned Git blob objects, including historical versions absent from the checked-out HEAD.",
+    "current_head_runtime_gate": false,
+    "all_cloned_git_blobs_scanned": 360,
+    "all_cloned_git_blob_bytes_read": 237555446,
+    "lfs_pointer_blobs": [
+      "03e693e5d04be242a483d50f7c09f72f73abdb84",
+      "3eb3f8b0b3a8d1b3184ec9dbce4ef5c703484e79",
+      "5ef1698fa620ed9848fc779e49ccbb76ff8ab5ff",
+      "d00eeb17b6840909b5f56a9be73d8606e50c757e"
+    ],
+    "lfs_pointer_paths": [
+      {
+        "oid": "03e693e5d04be242a483d50f7c09f72f73abdb84",
+        "path": "ame2/ame2/assets/g1_lidar/configuration/g1_lidar_base.usd"
+      },
+      {
+        "oid": "3eb3f8b0b3a8d1b3184ec9dbce4ef5c703484e79",
+        "path": "ame2/ame2/assets/g1_lidar/configuration/g1_lidar_sensor.usd"
+      },
+      {
+        "oid": "5ef1698fa620ed9848fc779e49ccbb76ff8ab5ff",
+        "path": "ame2/ame2/assets/g1_lidar/configuration/g1_lidar_physics.usd"
+      },
+      {
+        "oid": "d00eeb17b6840909b5f56a9be73d8606e50c757e",
+        "path": "ame2/ame2/assets/g1_lidar/g1_lidar.usd"
+      }
+    ],
+    "original_stronger_failure": {
+      "type": "AssertionError",
+      "message": "Git LFS pointer blob found"
+    },
+    "original_stronger_report": "outputs/research/reproduce-20261010/fresh-clone-final/all_history_strict_attempt.json",
+    "original_stronger_report_sha256": "9f9c9044ac38754e084c9f9c54b17f7cff278bf0ad66ebcc715166e26d6558ee",
+    "explanation": "Four original historical USD LFS pointer blobs remain in Git history. None is referenced by the checked-out research HEAD. History was not modified."
+  },
+  "checks_scope": [
+    "Independent HTTPS clone of GitHub research with Git LFS filters disabled.",
+    "Read-only Git blob, published SHA256, CPU OpenUSD/NPY and checkpoint structure/numeric checks.",
+    "No GPU simulation, policy rollout, training, real robot or fresh-clone GPU end-to-end validation."
+  ],
+  "scope": "checked_out_research_head",
+  "scope_clarified_utc": "2026-10-10T14:32:33.802741+00:00",
+  "fresh_clone_gpu_end_to_end_tested": false
+}

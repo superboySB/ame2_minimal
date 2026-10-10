@@ -4,7 +4,7 @@
 
 状态/动作/奖励、PPO 与 student 蒸馏 loss、地图数据与 label 来源，以及实际 real→sim→real 实现边界，另见独立的 [technical_pipeline.md](technical_pipeline.md)。
 
-本仓库是 **Unitree G1 足式 locomotion** 项目，发布了普通 AME-2 teacher、主动 gaze teacher 及一个 gaze checkpoint。AM-Bench 的飞机与机械臂属于另一个项目；本手册沿用其配置与证据组织方式，覆盖本项目实际存在的机器人和场景。[上游 README](README.md) 明确尚未公开 neural mapping 权重、student 完整训练依赖、Tron1 环境和 neural map 训练代码，这些条目在 usage.md 单列。
+本仓库是 **Unitree G1 足式 locomotion** 项目，上游发布了普通 AME-2 teacher、主动 gaze teacher 及 gaze `model_2400.pt`。本分支另已完成 4096 环境、5000 次更新的 gaze 重训，并随 Git 提供 `model_4999.pt`。AM-Bench 的飞机与机械臂属于另一个项目；本手册沿用其配置与证据组织方式，覆盖本项目实际存在的机器人和场景。[上游 README](README.md) 明确尚未公开 neural mapping 权重、student 完整训练依赖、Tron1 环境和 neural map 训练代码，这些条目在 usage.md 单列。
 
 ## 1. 机器、目录与单镜像
 
@@ -25,7 +25,7 @@ flowchart LR
   Train -->|checkpoint / YAML / 日志回传| Local
 ```
 
-仓库提供的机器人 USD、mesh、Mid360 扫描方向和 gaze checkpoint 随源码保留。`research` 分支将 G1 的四个 USD 保存为普通 Git 文件，并在该资产目录覆盖上层 LFS 规则；约 16.1 MB 的 base USD 内嵌全部 mesh，材质来自 Isaac 镜像。扫描方向 NPY 和官方 checkpoint 同样是完整 Git 文件，因此全新克隆不需要在宿主机安装 git-lfs 或另行下载这些运行资产。NVIDIA 基础镜像首次拉取较大，构建前检查本地和服务器 Docker 数据目录的剩余空间。所有下文宿主机命令都从仓库根目录执行；`/isaac-sim/python.sh` 只在 Docker 内使用。
+仓库提供的机器人 USD、mesh、Mid360 扫描方向和两个 gaze checkpoint 随源码保留。`research` 分支将 G1 的四个 USD 保存为普通 Git 文件，并在该资产目录覆盖上层 LFS 规则；约 16.1 MB 的 base USD 内嵌全部 mesh，材质来自 Isaac 镜像。扫描方向 NPY、上游 `model_2400.pt` 和本次重训 `model_4999.pt` 同样是完整 Git 文件，因此全新克隆不需要在宿主机安装 git-lfs 或另行下载这些运行资产。NVIDIA 基础镜像首次拉取较大，构建前检查本地和服务器 Docker 数据目录的剩余空间。所有下文宿主机命令都从仓库根目录执行；`/isaac-sim/python.sh` 只在 Docker 内使用。
 
 ```bash
 git clone --branch research https://github.com/superboySB/ame2_minimal.git ame2-research
@@ -109,6 +109,21 @@ IMAGE=ame2:research ./container/run.sh -g 0 play \
 
 普通 teacher 使用 `Ame2-G1-Play`，gaze teacher 使用 `Ame2-G1-Gaze-Play`。checkpoint 必须匹配 actor 结构；官方 gaze 权重不能当作普通 AME-2 权重加载。teacher 观察的是仿真 privileged height scan；仅凭 teacher 在地形上行走不能证明真实激光 neural mapping 已经运行。
 
+**直接运行本次 5000 次重训权重。** 新 checkout 同时包含 [model_4999.pt](modelzoo/g1_gaze_research_4096env_5000/model_4999.pt)、实际 [env.yaml](modelzoo/g1_gaze_research_4096env_5000/params/env.yaml)、[agent.yaml](modelzoo/g1_gaze_research_4096env_5000/params/agent.yaml) 和 [provenance.json](modelzoo/g1_gaze_research_4096env_5000/provenance.json)。它由 seed 42、单卡 4096 环境、Muon / BF16、23 critic heads 从头训练 5000 次得到，末迭代为 4999。文件为 82,511,607 bytes，SHA-256 为 `0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e`：
+
+```bash
+sha256sum modelzoo/g1_gaze_research_4096env_5000/model_4999.pt
+IMAGE=ame2:research ./container/run.sh -g 0 play \
+  --task Ame2-G1-Gaze-Play --num_envs 1 --seed 42 \
+  --checkpoint /workspace/ame2-minimal/modelzoo/g1_gaze_research_4096env_5000/model_4999.pt \
+  --output_dir /workspace/ame2-minimal/outputs/research/manual-final-gaze \
+  --terrain rough --difficulty 0.35 --video --video_length 800 --no_markers
+```
+
+启动器将当前 checkout 的 `modelzoo/` 只读挂入 Docker，所以冻结的 6333 镜像无需重建即可加载这个新权重；该镜像内原始构建快照本身不包含后来训练出的文件。本次权重与原作者 64000 环境配置的 `model_2400.pt` 分目录保存，训练规模与预算不同；完整训练和有限值审计通过不等于所有地形都能成功，独立策略结果见 [usage.md](usage.md#3-两种-teacher-训练)。
+
+已对 GitHub 的 `c084d77` 做[独立新克隆检查](usage_assets/diagnostics/fresh_clone_final_checkpoint.json)：禁用 LFS filters 后，checkout 的运行资产、最终权重和配置 SHA 均匹配，CPU USD / NPY 与 checkpoint 合同通过。该次检查不包含新克隆 GPU 全流程；历史提交中的 4 个原始 USD LFS pointer 仍保留，不影响所测 checkout。
+
 可选 GUI 使用同一张镜像：
 
 ```bash
@@ -135,7 +150,7 @@ IMAGE=ame2:research ./container/run.sh -g 0 train \
 
 训练产物写入 `ame2/logs/rsl_rl/ame2_gaze/<时间戳>_smoke-gaze/`，包括 `model_*.pt`、实际 `params/env.yaml`、`params/agent.yaml` 和 TensorBoard event。普通 teacher 将任务替换为 `Ame2-G1`，其实验目录为 `ame2`。
 
-| 参数 | 当前源码 teacher 默认值 | 已发布 gaze checkpoint 的配套记录 |
+| 参数 | 当前源码 teacher 默认值 | 上游 `model_2400.pt` 的配套记录 |
 | --- | --- | --- |
 | 机器人 / 控制步长 | G1 / 0.02 s，物理步长 0.005 s，decimation 4 | 同类 G1 环境 |
 | 环境数量 | 4096 / 进程 | `env.yaml` 为 16000 / 进程；运行名 `g1_gaze_4x16k`，modelzoo 说明合计 64000 |
@@ -187,9 +202,13 @@ ssh -o BatchMode=yes -p 22 tencent-231 \
 
 `deploy` 先同步源码与 modelzoo，再传输镜像。`image` 在两端完整 image config digest 与有序文件系统 layer DiffIDs 相同时跳过传输；需要传输时，`.transfer/` 内使用压缩 Docker archive 和 SHA-256 校验，远端导入后再次比较这两个标识。`push` 仅更新源码，保留两端日志与缓存；`pull` 回传 `ame2/logs/`、`outputs/`、`artifacts/` 和 `usage_assets/`。
 
+同步脚本不传播跨主机的 owner/group，也不改 Docker 已有目录的时间，避免两端 UID/GID 和产物归属不同导致回传后再次上传失败；文件内容、文件时间与权限照常同步。
+
 本次本地 Docker 29.1.3 使用 legacy image store，远端 Docker 29.6.2 使用 containerd store，`docker inspect .Id` 分别显示 config digest 与 OCI manifest digest，字符串不同不能直接判定镜像不同。`container/image_identity.sh` 在镜像 Docker 内读取该镜像自己的只读 manifest blob，提取相同的完整 config digest，再核验有序 DiffIDs；不在服务器安装解析包，也不挂载整个 Docker 数据目录。
 
 Docker 的两种存储后端见[官方 containerd image store 说明](https://docs.docker.com/engine/storage/containerd/)；远端 `.Id` 的 descriptor digest 赋值可在 [Moby image inspect 源码](https://github.com/moby/moby/blob/master/daemon/containerd/image_inspect.go)核对。本项目的镜像一致性以稳定 config digest 与完整有序 layer 列表为准。
+
+完整训练和评测后，又对两端现有镜像做了[最终实查](usage_assets/diagnostics/final_image_identity.json)：config digest 同为 `6333e632…`，36 个有序 layer DiffIDs 全部一致。新 checkpoint 通过前述只读目录挂载提供。
 
 ```bash
 ./container/cloud.sh push
@@ -210,23 +229,25 @@ ssh -o BatchMode=yes -p 22 tencent-231 'docker logs --tail 100 ame2-official-gaz
 
 脚本拒绝同名证据目录，`new-full-trial` 每次替换为新的运行标记。产物目录为 `outputs/research/reproduce-20261010/cloud_<标记>/`；checkpoint 在 `ame2/logs/rsl_rl/research_official_full/`。`full` 保持默认的 Gaze 环境、4096 env、5000 iterations、seed 42 和优化器，仅把 checkpoint 保存间隔改为 200，便于中途恢复与审计。默认算法参数与原 64000 环境 checkpoint 的差别见第 4 节。
 
-本次已有训练继续运行，不需再启动一份。它的独立 `training_monitor.py` 在 Docker 内每 60 秒更新 `cloud_full/progress.json`，不会改动训练。只有退出码、最终 manifest、26 个保存点（0、200…4800、4999）、checkpoint/optimizer 有限性与参数更新、7 项 TensorBoard Loss 各自完整的 5000 条有限记录（0–4999）及原始配置全部核验通过后，才写 `monitor_result.json` 的 `passed=true`。监控通过仍需另做最终策略 rollout，不能等同于任务成功率。
+本次完整训练已经结束：[训练 manifest](usage_assets/diagnostics/full_completed_training/train_result.json)记录从 iteration 0 到 4999 的 5000 次 fresh 更新，进程耗时 34,920.865 s（约 9 小时 42 分 01 秒）。[终态 monitor](usage_assets/diagnostics/full_completed_training/monitor_result.json)于 2026-10-10 22:20:29 CST 确认 `completed/passed=true`；[checkpoint 审计](usage_assets/diagnostics/full_completed_training/checkpoint_audit.json)及[本地回传校验](usage_assets/diagnostics/full_completed_training/local_transfer_validation.json)也通过。退出码、最终 manifest、26 个保存点（0、200…4800、4999）、checkpoint/optimizer 有限性与参数更新、7 项 TensorBoard Loss 各自完整的 5000 条有限记录（0–4999）及原始配置均已核验。监控通过与独立策略的任务表现分别记录，不能等同于任务成功率。
 
 ```bash
 ssh -o BatchMode=yes -p 22 tencent-231 \
   'cat /diff/dzp_is_sb/ame2-research/outputs/research/reproduce-20261010/cloud_full/progress.json'
 ```
 
-训练监控确认 `completed/passed=true` 后回传产物，再用本地同一镜像独立验收最终权重：
+训练产物已回传本地。复跑完整独立验收时，使用本地同一镜像和新的空输出目录；它需要完整训练产物，而前述手动推理只需 Git 随附的最终权重：
 
 ```bash
 ./container/cloud.sh pull
 ./container/run.sh -g 0 cmd /isaac-sim/python.sh scripts/research/evaluate_final.py \
   --training_report /workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_full \
-  --output /workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy
+  --output /workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy-repeat
 ```
 
 本地单卡桌面按前文显式使用 GPU0；云端仍按空闲卡规则选择。这个入口拒绝未完成的训练，逐一核对回传的全部 26 个 checkpoint 的 SHA256，CPU 重审初始/最终 checkpoint，导出真实训练曲线，再运行 3 个 seed 的全部 16 地形、native/JIT 对照及两个录像试次。`training_curves/` 保存 PNG、SVG 和含全部原始 scalar 点与事件文件 SHA256 的 `curves.json`，不做平滑或插值；`/time` 标签的横轴是秒，不混作更新次数。曲线还需核对 7 项必需 Loss 的迭代序列精确为 0–4999，缺步或重复都失败。输出目录必须为空，重跑用新目录。`passed` 表示执行/有限值/导出检查通过，任务表现另看 first-episode 统计；不会把自动 reset 后才达到目标计作首回合成功。
+
+本次[独立验收总报告](usage_assets/diagnostics/final_policy_evaluation/summary.json)已完成且 8/8 项执行检查通过。三个 native seed 的严格首回合成功为 8/16、12/16、8/16，合计 28/48；JIT seed 42 单列为 9/16。全部地形、早停与 timeout 细目见 [usage 第 3.1 节](usage.md#31-最终重训权重的独立策略结果)，不以执行检查通过替代运动能力结果。
 
 | 阶段 | 内容 |
 | --- | --- |

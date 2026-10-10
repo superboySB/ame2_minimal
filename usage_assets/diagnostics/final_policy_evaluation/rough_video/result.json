@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "started_utc": "2026-10-10T14:26:45.811762+00:00",
+  "command": [
+    "scripts/research/verify.py",
+    "--headless",
+    "--task",
+    "Ame2-G1-Gaze-Play",
+    "--terrain",
+    "rough",
+    "--num_envs",
+    "1",
+    "--steps",
+    "800",
+    "--seed",
+    "42",
+    "--difficulty",
+    "0.35",
+    "--checkpoint",
+    "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4999.pt",
+    "--policy",
+    "native",
+    "--first_episode",
+    "--report",
+    "/workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy/rough_video/result.json",
+    "--export_jit",
+    "--video"
+  ],
+  "arguments": {
+    "task": "Ame2-G1-Gaze-Play",
+    "terrain": "rough",
+    "difficulty": 0.35,
+    "num_envs": 1,
+    "steps": 800,
+    "seed": 42,
+    "checkpoint": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4999.pt",
+    "policy": "native",
+    "export_jit": true,
+    "video": true,
+    "attention": false,
+    "mid360": false,
+    "first_episode": true,
+    "report": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy/rough_video/result.json",
+    "enable_cameras": true,
+    "xr": false,
+    "device": "cuda:0",
+    "cpu": false,
+    "verbose": false,
+    "info": false,
+    "rendering_mode": null,
+    "kit_args": "",
+    "anim_recording_enabled": false,
+    "anim_recording_start_time": 0,
+    "anim_recording_stop_time": 10,
+    "headless": true,
+    "hide_ui": true,
+    "create_new_stage": false,
+    "physics_gpu": 0,
+    "active_gpu": 0
+  },
+  "python": "3.11.13",
+  "torch": "2.7.0+cu128",
+  "cuda": "12.8",
+  "passed": true,
+  "packages": {
+    "isaaclab": "0.54.2",
+    "rsl-rl-lib": "5.0.0",
+    "ame2": "0.1.0"
+  },
+  "terrain_names": [
+    "rough"
+  ],
+  "registered_tasks": [
+    "Ame2-G1",
+    "Ame2-G1-Gaze",
+    "Ame2-G1-Gaze-Play",
+    "Ame2-G1-Gaze-Student",
+    "Ame2-G1-Gaze-Student-Play",
+    "Ame2-G1-Play"
+  ],
+  "terrain_grid": {
+    "rows": 1,
+    "columns": 1,
+    "difficulty_range": [
+      0.35,
+      0.35
+    ],
+    "generator_curriculum": true,
+    "environment_terrain_curriculum": false
+  },
+  "observation_shapes": {
+    "teacher_mapping": [
+      1,
+      26,
+      15,
+      3
+    ],
+    "teacher_prop": [
+      1,
+      82
+    ],
+    "critic": [
+      1,
+      499
+    ]
+  },
+  "actions": 23,
+  "reward_terms": [
+    "ame2_position_tracking",
+    "ame2_heading_tracking",
+    "ame2_move2goal",
+    "ame2_standatgoal",
+    "early_termination_penalty",
+    "undesired_spinning",
+    "undesired_leaping",
+    "undesired_non_foot_contacts",
+    "undesired_stumbling",
+    "undesired_slippage",
+    "undesired_self_col_knee",
+    "undesired_self_col_torso",
+    "undesired_self_col_ankle",
+    "base_roll_rate",
+    "joint_regularization",
+    "action_smoothness",
+    "link_contact_forces",
+    "body_lin_acc_l1",
+    "joint_pos_limits",
+    "joint_vel_limits",
+    "joint_torque_limits",
+    "ame2_optional_uppershaping",
+    "ame2_optional_foot_shaping"
+  ],
+  "termination_terms": [
+    "time_out",
+    "early_gravity",
+    "early_hip_acc",
+    "early_illegal_contact",
+    "early_stagnation"
+  ],
+  "step_dt": 0.02,
+  "policy_mode": "native",
+  "checkpoint": {
+    "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4999.pt",
+    "sha256": "0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e",
+    "iteration": 4999
+  },
+  "critic_heads": 23,
+  "jit": {
+    "path": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy/rough_video/result.jit",
+    "sha256": "26d802167186aa49efaacd73a4c98907c5f42244994858318df63a30d54c42cb",
+    "max_absolute_action_error": 0.0,
+    "passed": true
+  },
+  "environments": [
+    {
+      "env_id": 0,
+      "terrain": "rough",
+      "terrain_column": 0,
+      "reward_sum": 260.93621826171875,
+      "minimum_goal_distance_m": 0.12304555624723434,
+      "final_goal_distance_m": 0.5262084603309631,
+      "reached_goal": true,
+      "early_terminations": 0,
+      "timeouts": 1,
+      "initial_position": [
+        -0.06907656788825989,
+        0.02582111954689026,
+        0.7649999856948853
+      ],
+      "final_position": [
+        -0.11447832733392715,
+        -0.16163530945777893,
+        0.7649999856948853
+      ]
+    }
+  ],
+  "first_episode": {
+    "scope": "initial reset through first terminated-or-timeout state, inclusive",
+    "sampling_phase": "after physics/reward computation and before automatic reset",
+    "position_threshold_m": 0.5,
+    "heading_threshold_rad": 0.5,
+    "success_definition": "First episode ends with timeout=true and terminated=false, and its pre-reset terminal planar goal distance is <0.5m and absolute wrapped heading error is <0.5rad. Censored episodes are not successful. This tests the terminal pose, not a dwell-time requirement.",
+    "duration_definition": "Elapsed first-episode simulation time; censored episodes show observed time only.",
+    "environments": [
+      {
+        "env_id": 0,
+        "ever_position_goal": true,
+        "ever_pose_goal": true,
+        "success": true,
+        "terminated": false,
+        "timeout": true,
+        "censored": false,
+        "episode_length_steps": 800,
+        "duration_seconds": 16.0,
+        "minimum_goal_distance_m": 0.12304555624723434,
+        "first_position_goal_step": 235,
+        "first_pose_goal_step": 235,
+        "terminal_goal_distance_m": 0.14279316365718842,
+        "terminal_heading_error_rad": -0.09385824203491211,
+        "terminal_position_goal": true,
+        "terminal_pose_goal": true,
+        "last_observed_goal_distance_m": 0.14279316365718842,
+        "last_observed_heading_error_rad": -0.09385824203491211,
+        "terminal_terms": [
+          "time_out"
+        ]
+      }
+    ],
+    "summary": {
+      "num_environments": 1,
+      "ever_position_goal": 1,
+      "ever_pose_goal": 1,
+      "successes": 1,
+      "terminated": 0,
+      "timeouts": 1,
+      "censored": 0
+    }
+  },
+  "steps_completed": 800,
+  "simulation_seconds": 16.0,
+  "finite_checks_passed": true,
+  "videos": [
+    "/workspace/ame2-minimal/outputs/research/reproduce-20261010/full-final-policy/rough_video/videos/result-step-0.mp4"
+  ],
+  "wall_seconds": 37.798238393850625
+}

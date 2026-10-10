@@ -25,7 +25,7 @@
 
 不能把注册成功当作 student 已能运行，不能把两次 PPO 更新当作训练收敛，也不能把视频正常生成当作越障成功。重复录制同一个试次的不同视角只算一次实验。每段视频应保留 task、terrain、difficulty、seed、checkpoint 来源、步数、最终目标距离、提前终止及文件哈希。
 
-最终新训练权重将额外使用 `verify.py --first_episode`：在物理步后、自动 reset 前只读采样第一次回合，分别记录位置到达、位置与朝向同时到达、早停、超时和未完成回合。严格指标定义为首次回合以 timeout 结束、无 early termination、终点位置误差 <0.5 m 且 wrapped heading error 绝对值 <0.5 rad；这是本分支明确选定的评估指标，不是论文 benchmark 成功率。旧报告的 `reached_goal` 仍表示整个有界 rollout 中曾到达，可能跨自动 reset，二者不可混用。
+最终新训练权重已额外使用 `verify.py --first_episode`：在物理步后、自动 reset 前只读采样第一次回合，分别记录位置到达、位置与朝向同时到达、早停、超时和未完成回合。严格指标定义为首次回合以 timeout 结束、无 early termination、终点位置误差 <0.5 m 且 wrapped heading error 绝对值 <0.5 rad；这是本分支明确选定的评估指标，不是论文 benchmark 成功率，也不额外要求持续站稳时长。旧报告的 `reached_goal` 仍表示整个有界 rollout 中曾到达，可能跨自动 reset，二者不可混用。
 
 ## 1. 全部机器人与任务入口
 
@@ -129,7 +129,7 @@ G1 teacher 的 actor 观察 `teacher_mapping` 和 `teacher_prop`，critic 使用
 
 新增首回合统计已实测：同一发布 checkpoint、seed42、difficulty0.5、全部16地形、native800步，**15/16** 在首回合 timeout 时同时满足位置/朝向阈值且未早停；`test_1` 在第283步（5.66s）早停，终止前距离1.686m，因此判失败。其他15项均完整运行800步；JIT parity 最大误差仍为 `4.77e-7`。[首回合原始报告](usage_assets/diagnostics/first_episode_official.json)、[源码与报告SHA](usage_assets/diagnostics/first_episode_provenance.json)。这是固定条件的单次 baseline，不是多seed成功率。
 
-统计实现另经7项Docker CPU测试和短训权重的真实800步检查：短训模型首回合16/16早停、严格成功0；整段rollout累计206次早停，证明新统计不会把多回合混为一次。[短训统计报告](usage_assets/diagnostics/first_episode_short_train.json)。最终评估入口的[未完成训练拒绝记录](usage_assets/diagnostics/final_eval_unfinished_guard.json)和[子进程超时/中断回收检查](usage_assets/diagnostics/final_eval_process_contract.json)也已保存；这些检查不代表云端5000次训练已完成。
+统计实现另经7项Docker CPU测试和短训权重的真实800步检查：短训模型首回合16/16早停、严格成功0；整段rollout累计206次早停，证明新统计不会把多回合混为一次。[短训统计报告](usage_assets/diagnostics/first_episode_short_train.json)。最终评估入口的[未完成训练拒绝记录](usage_assets/diagnostics/final_eval_unfinished_guard.json)和[子进程超时/中断回收检查](usage_assets/diagnostics/final_eval_process_contract.json)也已保存；这些是工具合同检查，完整训练终态另见第3节。
 
 ## 3. 两种 teacher 训练
 
@@ -159,7 +159,7 @@ G1 teacher 的 actor 观察 `teacher_mapping` 和 `teacher_prop`，critic 使用
 | torso / arm / foot shaping | 默认 reward 配置及覆盖 | 默认 shaping 在短训中产生奖励日志；权重效果未做消融 |
 | checkpoint 保存与恢复 | `--resume --load_run ... --checkpoint ...` | 从本次 gaze Muon iteration 2 恢复，实际更新 3、4；审计通过 |
 | 多 GPU | 两 rank、每 worker 64 env、合计 128 env | 兼容配置各 3 次更新通过；默认通信基线首次 stall，详情见下文 |
-| 云端完整默认训练 | 4096 env / 5000 iterations / 最小空闲 GPU 2 | 进行中；截至 12:50 CST 完成 96 次更新，尚未完成 5000 次 |
+| 云端完整默认训练 | 4096 env / 5000 iterations / 最小空闲 GPU 2 | 已完成 iteration 0–4999；26 个 checkpoint、完整 Loss 与回传 SHA 审计通过；独立策略表现另列 |
 
 原始 checkpoint 的 64000 环境配置与当前默认 4096 环境配置分别见 note.md 第 4 节。完整训练必须保留实际 YAML、checkpoint iteration、GPU 型号、镜像 ID 与代码版本；“已启动”与“已完成 5000 次更新”应分别标注。
 
@@ -176,11 +176,15 @@ G1 teacher 的 actor 观察 `teacher_mapping` 和 `teacher_prop`，critic 使用
 
 ![四种真实短训练的 loss 与 actor 参数变化](usage_assets/diagnostics/training_smoke.png)
 
-`cloud_resume` 加载上述 gaze Muon `model_2.pt`，保留 optimizer state，从 iteration 3 开始追加两次更新，最终为 `model_4.pt`，实际报告与 checkpoint / loss 审计均通过。`cloud_benchmark` 另用完整默认 600 个地形 tile、4096 环境、Muon+bf16 和 23 critic heads 执行 10 次更新至 `model_9.pt`，同样通过保存与有限值审计。GPU 2 峰值显存 **19,752 MiB（约 19.29 GiB）**，超过本地 16 GiB，因此将这个规模安排在云端。该试次训练循环约 82.16 s，总墙钟 132.76 s；这些是短训实测，5000 次完整训练需单独等待和验收。
+`cloud_resume` 加载上述 gaze Muon `model_2.pt`，保留 optimizer state，从 iteration 3 开始追加两次更新，最终为 `model_4.pt`，实际报告与 checkpoint / loss 审计均通过。`cloud_benchmark` 另用完整默认 600 个地形 tile、4096 环境、Muon+bf16 和 23 critic heads 执行 10 次更新至 `model_9.pt`，同样通过保存与有限值审计。GPU 2 峰值显存 **19,752 MiB（约 19.29 GiB）**，超过本地 16 GiB，因此将这个规模安排在云端。该试次训练循环约 82.16 s，总墙钟 132.76 s；这些是短训实测，完整 5000 次训练的独立耗时与终态见下文。
 
 新训练普通 teacher 的 `model_2.pt` 已回传本地，由 `Ame2-G1-Play` 在 16 地形 native 推理 64 步，状态有限、导出 JIT 动作误差为 0。这个仅训练 3 次更新的策略在 16 个环境中仅 1 个曾进入目标半径，累计 14 次提前终止；它验证保存 / 回传 / 再加载链路，行走质量尚未训练出来。
 
-正式默认规模的 5000 次训练已在云端 **GPU 2**、最终 6333 镜像的 `ame2-cloud-research` 容器中运行。按 [2026-10-10 12:50:45 CST 的进度快照](usage_assets/diagnostics/full_progress.json)，已完成 iteration 0–95（96 次更新），已保存初始 `model_0.pt`，checkpoint 与当前 loss 有限；**完整训练尚未完成**。运行目录为 `research_official_full/2026-10-10_04-38-09_full`；按当时吞吐估计约 22:04 CST 结束，实际时间和最终结果需继续核验。
+正式默认规模训练已在云端 **GPU 2**、6333 镜像的 `ame2-cloud-research` 容器中完成。运行目录为 `research_official_full/2026-10-10_04-38-09_full`；[真实 manifest](usage_assets/diagnostics/full_completed_training/train_result.json)记录 seed 42、4096 环境、Muon / BF16、23 critic heads，从头执行 iteration 0–4999，合计 **5000 次更新**，进程耗时 **34,920.865 s（约 9 小时 42 分 01 秒）**。[终态监控](usage_assets/diagnostics/full_completed_training/monitor_result.json)于 2026-10-10 **22:20:29 CST** 确认完成并通过。26 个保存点的 checkpoint / optimizer 有限性、参数更新、7 项 Loss 的完整 5000 条记录及实际配置均通过[原始审计](usage_assets/diagnostics/full_completed_training/checkpoint_audit.json)；回传后再次核对所有 checkpoint 的字节与 SHA，见[本地校验](usage_assets/diagnostics/full_completed_training/local_transfer_validation.json)。
+
+最终 [model_4999.pt](modelzoo/g1_gaze_research_4096env_5000/model_4999.pt) 为 82,511,607 bytes，SHA-256 为 `0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e`，连同[实际配置与来源](modelzoo/g1_gaze_research_4096env_5000/provenance.json)作为普通 Git 文件提供。新克隆可按 note 第 3 节直接推理。原作者 `model_2400.pt` 继续保留为独立基线。[12:50 的 96 次更新快照](usage_assets/diagnostics/full_progress.json)是历史记录，其中估计的结束时间不代表实际终态。
+
+另从 GitHub 独立克隆 `c084d77` 并禁用 LFS filters，核对 checkout 的 303 个 tracked paths 无 LFS pointer，最终权重 / 配置 / 训练证据 SHA 匹配，CPU USD / NPY 与 4999 checkpoint 结构、358 个有限 tensor 检查通过，CUDA 未初始化。该[新克隆报告](usage_assets/diagnostics/fresh_clone_final_checkpoint.json)仅证明 CPU 合同；历史中仍有 4 个原始 USD LFS pointer，没有声称历史无 pointer 或已测新克隆 GPU 全流程。
 
 该次长期任务由 `docker exec` 启动，查看持久化文件日志，而非常驻容器的 `docker logs`：
 
@@ -190,9 +194,60 @@ ssh -o BatchMode=yes -p 22 tencent-231 \
 ./container/cloud.sh pull
 ```
 
-完整验收需训练结束、iteration 4999 checkpoint 与配置一致、最终 checkpoint / event 审计通过，再做独立策略评估。进行中的初始化报告不用于判定已完成或训练失败。
+训练完成、iteration 4999 checkpoint、配置与完整 event 已核验；独立策略评估单独检查首回合目标、早停与 timeout。执行和数值检查通过不代表全部地形都能成功。
 
-最终评估入口会用 `scripts/research/plot_training.py` 从该次事件文件导出训练曲线及完整原始数据；输出包含 loss、奖励、回合长度、课程、策略标准差和吞吐，保留事件文件 SHA256。工具已用真实的 iteration 0–236 快照在 CPU Docker 内[逐点核对](usage_assets/diagnostics/training_curve_tool_validation.json)；请求最终 4999 门槛时，该未完成快照正确失败。独立监控的[18 项 CPU 合同检查](usage_assets/diagnostics/training_monitor_contract.json)涵盖缺 checkpoint、错误配置、缺 loss、记录不足和文件写入竞态。工具验证通过与完整训练完成分别记录，最终曲线需要等待原任务结束。
+最终评估入口已用 `scripts/research/plot_training.py` 从该次完整事件文件导出 loss、奖励、回合长度、课程、策略标准差和吞吐曲线，保留原始 scalar 点与事件文件 SHA256；7 项必需 Loss 的迭代序列均精确为 0–4999，有限值与无缺步/重复门槛通过。工具此前用 iteration 0–236 快照完成的[逐点核对](usage_assets/diagnostics/training_curve_tool_validation.json)仍保留为历史自测；该未完成快照请求最终 4999 门槛时正确失败。独立监控的[18 项 CPU 合同检查](usage_assets/diagnostics/training_monitor_contract.json)涵盖缺 checkpoint、错误配置、缺 loss、记录不足和文件写入竞态。工具自测、完整训练审计和最终策略表现分别记录。
+
+![本次5000次训练的实际TensorBoard曲线](usage_assets/final_policy/training_curves/training_curves.png)
+
+可下载[原始 SVG](usage_assets/final_policy/training_curves/training_curves.svg)与[完整 scalar 数据及来源 SHA](usage_assets/final_policy/training_curves/curves.json)。图中为实际记录的 75 个 scalar tag 中选出的诊断项，没有平滑或插值；训练中的 reach EMA 也不是独立评测成功率。
+
+### 3.1 最终重训权重的独立策略结果
+
+本地同一镜像重新加载 `model_4999.pt` 后，于 **2026-10-10 22:28:10 CST** 完成[最终独立验收](usage_assets/diagnostics/final_policy_evaluation/summary.json)：CPU checkpoint 复审、完整训练曲线、3 个 native seed、JIT 对照和两段录像共 **8/8 项执行检查通过**，总墙钟约 233.92 s。实际策略表现如下；通过检查表示运行、数值和产物有效，不表示每个回合完成目标。
+
+全部地形试次均为 difficulty 0.5、16 个环境、800 步，位置和朝向阈值见第 0 节。表中提前终止、timeout 和未完成统计仅针对第一次回合；timeout 列包含终点仍未达标的回合。
+
+| 路径 / seed | 首回合严格成功 | 提前终止 | timeout | 未完成回合 |
+| --- | --- | --- | --- | --- |
+| [native / 42](usage_assets/diagnostics/final_policy_evaluation/native_seed42/result.json) | 8/16 | 8 | 8 | 0 |
+| [native / 43](usage_assets/diagnostics/final_policy_evaluation/native_seed43/result.json) | 12/16 | 3 | 13 | 0 |
+| [native / 44](usage_assets/diagnostics/final_policy_evaluation/native_seed44/result.json) | 8/16 | 8 | 8 | 0 |
+| native 合计 | **28/48（58.3%）** | 19 | 29 | 0 |
+| [JIT / 42，单独对照](usage_assets/diagnostics/final_policy_evaluation/jit_seed42/result.json) | 9/16 | 7 | 9 | 0 |
+
+Native 的逐地形结果如下。“成功”表示上述终点位置/朝向条件与 timeout 同时满足；“超时未达标”没有提前终止，但不算成功。
+
+| 地形 | seed 42 | seed 43 | seed 44 |
+| --- | --- | --- | --- |
+| rough | 成功 | 成功 | 成功 |
+| stair_down | 成功 | 成功 | 成功 |
+| stair_up | 成功 | 成功 | 成功 |
+| boxes | 成功 | 成功 | 成功 |
+| obstacles | 成功 | 成功 | 成功 |
+| climb_up | 早停 | 超时未达标 | 早停 |
+| climb_down | 成功 | 成功 | 早停 |
+| consecutive | 成功 | 成功 | 成功 |
+| gap | 早停 | 成功 | 早停 |
+| pallets | 早停 | 成功 | 成功 |
+| beam | 成功 | 成功 | 成功 |
+| stones | 早停 | 成功 | 早停 |
+| pit | 早停 | 早停 | 早停 |
+| peak | 早停 | 成功 | 早停 |
+| test_1 | 早停 | 早停 | 早停 |
+| test_2 | 早停 | 早停 | 早停 |
+
+本次重训 seed 42 的 8/16 低于第 2 节原作者 checkpoint 在相同评估设置下的 15/16。这是实际结果；两份权重的训练规模和预算不同，本次没有进行差异归因实验。三 seed 合计只描述这 48 个固定条件回合，不能当作论文 benchmark 或真机成功率。
+
+Native / JIT 导出的动作比较最大误差为 `4.76837158203125e-7`；它比较的是初始同一观测下的动作，不表示整个 rollout 的轨迹相同。两条路径的首回合统计分别保留，不能因初始数值接近而相互代替。[本地初始/最终 checkpoint 复审](usage_assets/diagnostics/final_policy_evaluation/local_checkpoint_audit.json)与[评测来源记录](usage_assets/diagnostics/final_policy_evaluation/provenance.json)保留实际 checkpoint SHA、源码 SHA 和原始报告 SHA。
+
+最终权重另在 seed 42、difficulty 0.35 下录制 [rough](usage_assets/diagnostics/final_policy_evaluation/rough_video/result.json)和带 attention 的 [climb_up](usage_assets/diagnostics/final_policy_evaluation/climb_up_attention_video/result.json)，各 800 步 / 16 s；两段首回合均无早停并在 timeout 时满足严格目标条件。Rough 终点位置误差 0.143 m、heading error -0.094 rad；climb_up 为 0.041 m、-0.154 rad。它们与上表 difficulty 0.5 的全部地形矩阵是独立试次，不替代失败记录。
+
+[![最终重训权重在rough上的真实首回合录像](usage_assets/final_policy/animations/rough_video-result.gif)](usage_assets/playback.html#final-policy-rough_video-result)
+
+[![最终重训权重的climb_up与attention真实录像](usage_assets/final_policy/animations/climb_up_attention_video-result.gif)](usage_assets/playback.html#final-policy-climb_up_attention_video-result)
+
+点击预览进入离线播放器查看完整时长；也可直接下载 [rough MP4](usage_assets/final_policy/animations/rough_video-result.mp4)和 [climb_up attention MP4](usage_assets/final_policy/animations/climb_up_attention_video-result.mp4)。[新增媒体来源及逐文件 SHA](usage_assets/final_policy/append_provenance.json)保留原始视频、报告和完整曲线的对应关系。
 
 双 GPU 训练的首次默认 NCCL 通信试次发生 stall，安全结束后保留为失败记录。随后在本服务器使用 `NCCL_CUMEM_HOST_ENABLE=0`、`NCCL_P2P_DISABLE=1`、`NCCL_IB_DISABLE=1`、`NCCL_SOCKET_IFNAME=lo` 的兼容组合重新执行，并记录 NCCL INFO / INIT,GRAPH,ENV 日志；两个 rank 的 `world_size=2`、每卡 64 env、各完成 3 次更新到 iteration 2，共用同一运行目录，退出码、checkpoint / optimizer / loss / 参数变化审计均通过。该组合实际可用，尚未隔离其中哪一项解决了通信问题；用 `AME2_NCCL_COMPAT=1` 复现，完整命令见 note.md。变量定义可查 [NVIDIA NCCL 官方手册](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/env.html)。
 
@@ -318,22 +373,24 @@ teacher JIT 路径与 mapping checkpoint 路径见 note.md 第 7 节。核验 mi
 
 ## 6. 图文、视频与复现实验记录
 
-本分支已保留 **22 段真实 Isaac Sim 录像**：16 种地形、attention、首轮 rough、3 段原始 play 功能录像，以及 1 段短训练录像。原始 MP4 与大日志保存在实验目录，仓库包含完整时长压缩 MP4、GIF、poster 和机器可读来源清单。离线播放器分别展示进入目标半径、未到达、提前终止和目标指标未记录，支持播放、暂停、拖动与调速；未发布依赖的边界见第 5 节。
+本分支已保留 **24 段真实 Isaac Sim 录像**：原有 16 种地形、attention、首轮 rough、3 段原始 play 功能录像、1 段短训练录像，另加本次 `model_4999.pt` 的 rough 与 climb_up attention 两段。原始 MP4 与大日志保存在实验目录，仓库包含完整时长压缩 MP4、GIF、poster 和机器可读来源清单。离线播放器分别展示进入目标半径、未到达、提前终止和目标指标未记录，支持播放、暂停、拖动与调速；未发布依赖的边界见第 5 节。
 
-在容器内从真实报告导出图文资产；导出使用镜像内 ffmpeg，不启动 Isaac Sim：
+在容器内从真实报告导出图文资产；导出使用镜像内 ffmpeg，不启动 Isaac Sim。每次为 `--output` 换一个新目录，保留随 Git 发布的历史清单与快照：
 
 ```bash
 /isaac-sim/python.sh ../usage_assets/export.py \
   --report-root ../outputs/research/reproduce-20261010 \
-  --output ../usage_assets --gif
+  --output ../outputs/research/media-reexport-new --gif
 /isaac-sim/python.sh ../usage_assets/export_analysis.py \
   --report-root ../outputs/research/reproduce-20261010 \
-  --output ../usage_assets
+  --output ../outputs/research/media-reexport-new
 ```
 
 `manifest.json` 保留 source MP4、原始 JSON、压缩 MP4、poster 和 GIF 的 SHA-256；`manifest.js` 让离线 HTML 可以直接读取清单，无需宿主机 Python HTTP 服务。压缩 MP4 保留完整原始时长，GIF 对整段均匀采样 48 帧并统一约 6 s 循环：长片加速、短片慢放，不用于计时。
 
-离线播放器已用独立 Chrome profile、CPU CDP 客户端实际验证 10 项交互：`file://` 清单与 22 张视频卡加载、地形筛选、结果筛选、MP4 metadata、播放时间推进、暂停、seek、2× 调速、暂停全部、清除筛选。实测 1× 下约 0.651 s 墙钟推进 0.651 s，2× 下约 0.651 s 墙钟推进 1.301 s，seek 准确到 9.6 s。[真实浏览器报告](usage_assets/diagnostics/browser_result.json)由 `usage_assets/check_browser.py` 生成；测试后独立浏览器、端口和 profile 已清理。
+早期 22 段视频版本的离线播放器已用独立 Chrome profile、CPU CDP 客户端实际验证 10 项交互：`file://` 清单与 22 张视频卡加载、地形筛选、结果筛选、MP4 metadata、播放时间推进、暂停、seek、2× 调速、暂停全部、清除筛选。实测 1× 下约 0.651 s 墙钟推进 0.651 s，2× 下约 0.651 s 墙钟推进 1.301 s，seek 准确到 9.6 s。[该次真实浏览器报告](usage_assets/diagnostics/browser_result.json)由 `usage_assets/check_browser.py` 生成；该次测试后独立浏览器、端口和 profile 已清理。
+
+追加最终权重的两段录像后，已重新完成 [24 段版本的真实浏览器检查](usage_assets/diagnostics/browser_final24.json)：`file://` 下 24 个清单项与 24 张视频卡一致，上述 10 项交互全部通过；播放时间实际推进，暂停保持不动，seek 与 2× 调速均生效。测试使用 CPU 客户端与独立浏览器，结束后已关闭其端口并删除临时 profile。早期 22 段版本的报告与历史验收快照保持原样。
 
 按已生成的真实报告更新验收表：
 
@@ -359,14 +416,16 @@ teacher JIT 路径与 mapping checkpoint 路径见 note.md 第 7 节。核验 mi
 | 训练录像 / I/O descriptors | 64 env / 2 次更新通过 | 第 4.4 节，32 帧短片与真实 YAML |
 | 往返状态机 | 两个状态分支实际触发 | 第 4.3 节，32 s 录像与日志 |
 | fly 外力调试 | 入口执行通过；该段未到达且提前终止 | 第 4.3 节，不能计自主越障成功 |
-| 云端同镜像与代码同步 | 通过 | [6333 config / 36 层 / archive 校验](usage_assets/diagnostics/image_sync.json)；运行时 source SHA 单独记录 |
-| 离线视频播放器实际交互 | 10/10 通过 | 上述浏览器报告，非仅控件截图 |
-| 云端官方默认训练完成 | 进行中；96/5000 更新，尚未完成 | [截至 12:50 CST 的真实进度](usage_assets/diagnostics/full_progress.json)，实时查看命令见第 3 节 |
+| 云端同镜像与代码同步 | 通过 | [6333 config / 36 层 / archive 校验](usage_assets/diagnostics/image_sync.json)及[终态两端实查](usage_assets/diagnostics/final_image_identity.json)；运行时 source SHA 单独记录 |
+| 离线视频播放器实际交互 | 24 张视频卡，10/10 交互通过 | [最终真实浏览器报告](usage_assets/diagnostics/browser_final24.json)，非仅控件截图 |
+| 云端官方默认训练完成 | 5000/5000 更新完成，完整训练审计通过 | [终态 monitor](usage_assets/diagnostics/full_completed_training/monitor_result.json)、[26 个 checkpoint / 完整 Loss 审计](usage_assets/diagnostics/full_completed_training/checkpoint_audit.json)；策略表现另列 |
+| 本次最终权重独立策略评估 | 8/8 执行检查通过；native 首回合严格成功 28/48 | [最终总报告](usage_assets/diagnostics/final_policy_evaluation/summary.json)；三 seed / JIT / 两段录像的真实质量见第 3.1 节 |
+| GitHub 新克隆最终资产 | CPU 合同与文件 SHA 通过 | [c084d77 独立克隆检查](usage_assets/diagnostics/fresh_clone_final_checkpoint.json)；未做新克隆 GPU 全流程，历史 pointer 单列 |
 | Student / neural mapping / Tron1 | 上游依赖未发布 | 第 5 节 |
 
 [验收快照](usage_assets/validation_snapshot.json)保存采集时间、Docker image ID、GPU、seed、原始报告路径与 SHA-256；suite 的每个 job 记录实际代码文件 SHA。新的实验写入新目录和独立 trial ID，避免把失败重跑覆盖成一次从未失败过的实验。
 
-持续写入的完整训练进度、初始 manifest 和 GPU 日志另有 `snapshot_path` 指向保留历史哈希的静态副本；它们记录早期状态，完整训练仍以最终 manifest、审计和独立策略评估判定。
+早期完整训练进度、初始 manifest 和 GPU 日志的 `snapshot_path` 仍指向保留历史哈希的静态副本；上述验收快照保持原采集时的内容。完整训练终态另见[实际 manifest](usage_assets/diagnostics/full_completed_training/train_result.json)与[monitor](usage_assets/diagnostics/full_completed_training/monitor_result.json)，最终评测另存[独立验收快照](usage_assets/final_policy/validation_snapshot.json)，避免用后来的状态覆盖早期证据。[完整终态总览](usage_assets/final_validation_snapshot.json)汇总最终训练、评测、24 段媒体与浏览器、新克隆 CPU 合同及两端镜像实查的原始证据与 SHA。
 
 ## 7. 本分支为复现修复的入口
 

@@ -30,7 +30,10 @@ MODE=${1:-}; [[ -z "$MODE" ]] || shift
 [[ "$REMOTE_ROOT" =~ ^/[a-zA-Z0-9_./-]+$ && "$REMOTE_ROOT" != / && "$REMOTE_ROOT" != *..* ]] || { echo 'CLOUD_ROOT must be a safe absolute directory' >&2; exit 2; }
 [[ "$PORT" =~ ^[0-9]+$ ]] || { echo 'Invalid SSH port' >&2; exit 2; }
 SSH=(ssh -p "$PORT" -o BatchMode=yes -o ConnectTimeout=15)
-RSYNC=(rsync -a --partial --protect-args -e "ssh -p $PORT -o BatchMode=yes -o ConnectTimeout=15")
+# Container-created results may have a root group that the SSH user cannot set.
+# Keep bytes, modes and file timestamps without transferring host ownership or
+# setting timestamps on existing Docker-owned directories.
+RSYNC=(rsync -a --no-owner --no-group --omit-dir-times --partial --protect-args -e "ssh -p $PORT -o BatchMode=yes -o ConnectTimeout=15")
 show() { printf '%q ' "$@"; printf '\n'; }
 remote() {
     local script quoted

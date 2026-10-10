@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "kind": "completed_public_reproduction_final_evidence",
+  "captured_utc": "2026-10-10T14:37:20.174370+00:00",
+  "passed": true,
+  "scope": "Public released teacher locomotion functionality, official fresh training, and bounded final-policy evaluation; upstream unreleased perception/student and real robot deployment are excluded explicitly.",
+  "original_public_feature_suites": [
+    {
+      "report": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/tasks-final/summary.json",
+      "sha256": "f1e3c8c2e561ac6c5aa1241605b68dc9bcf37fd58cfbece06ff9747be00ed325",
+      "phase": "tasks",
+      "jobs_passed": 8,
+      "passed": true,
+      "snapshot": "usage_assets/validation_snapshot.json"
+    },
+    {
+      "report": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/terrains/summary.json",
+      "sha256": "95eb2036596ddf086cb9e789d248268f7b3863b8eda9540e3c3ed7f2c950fa02",
+      "phase": "terrains",
+      "jobs_passed": 17,
+      "passed": true,
+      "snapshot": "usage_assets/validation_snapshot.json"
+    },
+    {
+      "report": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cli/summary.json",
+      "sha256": "004fb9b2829bdeb2c2aa4c9ad382638ef6254d9a534bbb408712c8ed4cd6d804",
+      "phase": "cli",
+      "jobs_passed": 4,
+      "passed": true,
+      "snapshot": "usage_assets/validation_snapshot.json"
+    },
+    {
+      "report": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/extras/summary.json",
+      "sha256": "6df418fbc71ac3aac6d9d2935e527ea7a41eed48e91331c867ab0da3777fdfb9",
+      "phase": "extras",
+      "jobs_passed": 4,
+      "passed": true,
+      "snapshot": "usage_assets/validation_snapshot.json"
+    },
+    {
+      "report": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_matrix_final/matrix/summary.json",
+      "sha256": "ccff338004d34874392b6ee338a02d118b8a979711f826b5770af266eee1a8fb",
+      "phase": "training",
+      "jobs_passed": 5,
+      "passed": true,
+      "snapshot": "usage_assets/validation_snapshot.json"
+    }
+  ],
+  "training": {
+    "task": "Ame2-G1-Gaze",
+    "num_envs": 4096,
+    "seed": 42,
+    "world_size": 1,
+    "optimizer": "muon",
+    "use_mixed_precision": true,
+    "critic_heads": 23,
+    "iterations_completed": 5000,
+    "start_iteration": 0,
+    "final_iteration": 4999,
+    "resumed": false,
+    "wall_seconds": 34920.86524710804
+  },
+  "checkpoint_count_verified": 26,
+  "required_loss_tags": 7,
+  "records_per_required_loss_tag": 5000,
+  "loss_step_sequence": "Exactly 0 through 4999 once each, all finite",
+  "checkpoint": {
+    "path": "modelzoo/g1_gaze_research_4096env_5000/model_4999.pt",
+    "bytes": 82511607,
+    "sha256": "0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e"
+  },
+  "final_evaluation": {
+    "ended_utc": "2026-10-10T14:28:10.603721+00:00",
+    "wall_seconds": 233.9204599808436,
+    "execution_jobs_passed": 8,
+    "quality": [
+      {
+        "name": "native_seed42",
+        "quality": {
+          "environments": 16,
+          "position_goal_ever": 8,
+          "pose_goal_ever": 8,
+          "pose_goal_at_timeout_without_early_termination": 8,
+          "early_terminations": 8,
+          "timeouts": 8,
+          "censored": 0,
+          "definition": "First episode ends with timeout=true and terminated=false, and its pre-reset terminal planar goal distance is <0.5m and absolute wrapped heading error is <0.5rad. Censored episodes are not successful. This tests the terminal pose, not a dwell-time requirement."
+        }
+      },
+      {
+        "name": "native_seed43",
+        "quality": {
+          "environments": 16,
+          "position_goal_ever": 12,
+          "pose_goal_ever": 12,
+          "pose_goal_at_timeout_without_early_termination": 12,
+          "early_terminations": 3,
+          "timeouts": 13,
+          "censored": 0,
+          "definition": "First episode ends with timeout=true and terminated=false, and its pre-reset terminal planar goal distance is <0.5m and absolute wrapped heading error is <0.5rad. Censored episodes are not successful. This tests the terminal pose, not a dwell-time requirement."
+        }
+      },
+      {
+        "name": "native_seed44",
+        "quality": {
+          "environments": 16,
+          "position_goal_ever": 8,
+          "pose_goal_ever": 8,
+          "pose_goal_at_timeout_without_early_termination": 8,
+          "early_terminations": 8,
+          "timeouts": 8,
+          "censored": 0,
+          "definition": "First episode ends with timeout=true and terminated=false, and its pre-reset terminal planar goal distance is <0.5m and absolute wrapped heading error is <0.5rad. Censored episodes are not successful. This tests the terminal pose, not a dwell-time requirement."
+        }
+      },
+      {
+        "name": "jit_seed42",
+        "quality": {
+          "environments": 16,
+          "position_goal_ever": 10,
+          "pose_goal_ever": 10,
+          "pose_goal_at_timeout_without_early_termination": 9,
+          "early_terminations": 7,
+          "timeouts": 9,
+          "censored": 0,
+          "definition": "First episode ends with timeout=true and terminated=false, and its pre-reset terminal planar goal distance is <0.5m and absolute wrapped heading error is <0.5rad. Censored episodes are not successful. This tests the terminal pose, not a dwell-time requirement."
+        }
+      },
+      {
+        "name": "rough_video",
+        "quality": {
+          "environments": 1,
+          "position_goal_ever": 1,
+          "pose_goal_ever": 1,
+          "pose_goal_at_timeout_without_early_termination": 1,
+          "early_terminations": 0,
+          "timeouts": 1,
+          "censored": 0,
+          "definition": "First episode ends with timeout=true and terminated=false, and its pre-reset terminal planar goal distance is <0.5m and absolute wrapped heading error is <0.5rad. Censored episodes are not successful. This tests the terminal pose, not a dwell-time requirement."
+        }
+      },
+      {
+        "name": "climb_up_attention_video",
+        "quality": {
+          "environments": 1,
+          "position_goal_ever": 1,
+          "pose_goal_ever": 1,
+          "pose_goal_at_timeout_without_early_termination": 1,
+          "early_terminations": 0,
+          "timeouts": 1,
+          "censored": 0,
+          "definition": "First episode ends with timeout=true and terminated=false, and its pre-reset terminal planar goal distance is <0.5m and absolute wrapped heading error is <0.5rad. Censored episodes are not successful. This tests the terminal pose, not a dwell-time requirement."
+        }
+      }
+    ]
+  },
+  "media": {
+    "videos": 24,
+    "original_videos_preserved": 22,
+    "new_final_policy_videos": 2,
+    "browser_interaction_checks_passed": 10
+  },
+  "fresh_clone_scope": "checked_out_research_head",
+  "same_image_on_both_hosts": "sha256:6333e6323c90d66b81746da1ca2add459fa30019790b7e63524a26d0797fad46",
+  "readme": {
+    "unchanged": true,
+    "sha256": "119ed33b8854de90bbb0ad629036f50ebf81fcdb1d59df549dbc7055101f9d6c"
+  },
+  "historical_snapshots_unchanged": true,
+  "evidence": [
+    {
+      "path": "usage_assets/diagnostics/full_completed_training/monitor_result.json",
+      "sha256": "3266c30a19bbb24007349983fc077e39b5973b4eb60a7e03528855ae8bf3c5e3",
+      "bytes": 233
+    },
+    {
+      "path": "usage_assets/diagnostics/full_completed_training/checkpoint_audit.json",
+      "sha256": "e52cdaf4a7d3afed4f29e8289ca32afad1362d59670f3aae1194d79cdb00cb38",
+      "bytes": 46723
+    },
+    {
+      "path": "usage_assets/diagnostics/full_completed_training/local_transfer_validation.json",
+      "sha256": "afd94ee7b306b1ec5e645cc19e8f213bd73016e05c7e40b70586c660e1bd0d76",
+      "bytes": 11317
+    },
+    {
+      "path": "usage_assets/diagnostics/final_policy_evaluation/summary.json",
+      "sha256": "21d3fa819454df995ed7ae88940b2dd7c9cfa692e6971bb8371584058cae2fdc",
+      "bytes": 24956
+    },
+    {
+      "path": "usage_assets/diagnostics/final_policy_evaluation/provenance.json",
+      "sha256": "a743d693c5dfd6234494f3ed6388f234e5998cb4e87c1bc836bea8dc6d885ec4",
+      "bytes": 2786
+    },
+    {
+      "path": "usage_assets/diagnostics/browser_final24.json",
+      "sha256": "b83418a6a4be0f2bd0305c1fc38a41d20a1854d83ba4c3e2a7837d46b867886b",
+      "bytes": 3387
+    },
+    {
+      "path": "usage_assets/diagnostics/fresh_clone_final_checkpoint.json",
+      "sha256": "32eb6ee77ea0a00119868d7a81b935f0c0350728ea492bb48e6224c99eda540f",
+      "bytes": 5343
+    },
+    {
+      "path": "usage_assets/diagnostics/final_image_identity.json",
+      "sha256": "caca7bb4a4c64aabe6f12659db04043047b6368539650763b2104223cd11de5c",
+      "bytes": 3534
+    },
+    {
+      "path": "usage_assets/final_policy/append_provenance.json",
+      "sha256": "35c9ecec13a63adbfc747da92c290a942b7eaa3583b850926649378b6a4cc2dd",
+      "bytes": 3084
+    },
+    {
+      "path": "modelzoo/g1_gaze_research_4096env_5000/provenance.json",
+      "sha256": "bbfc6b46f7436268a46884c9298493a1ea080ecb9a2c08f64ab32aae4ebece40",
+      "bytes": 3806
+    },
+    {
+      "path": "usage_assets/final_policy/training_curves/curves.json",
+      "sha256": "0230e417acd43961dee93217266b86dc476cbf2cdabbe730e8c80269f20e3551",
+      "bytes": 46975355
+    }
+  ],
+  "remaining_upstream_and_hardware_boundaries": [
+    "The neural mapping checkpoint, mapping training data/code, and released student deployment artifacts are absent upstream; no substitute is represented as a reproduction.",
+    "No real G1 hardware, sensor calibration, driver/ROS2/DDS control transport or physical real2sim2real closed-loop evaluation was available.",
+    "Finite training and successful program execution are distinct from first-episode task quality. The three final native trials achieved 28/48 strict first-episode successes.",
+    "The fresh GitHub clone check covers the checked-out published HEAD and CPU asset/checkpoint contracts; it is not a new Docker build or clone GPU end-to-end run."
+  ]
+}
