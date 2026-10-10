@@ -18,7 +18,9 @@ Usage: container/cloud.sh [--dry-run] push|pull|image|deploy|gpu|status|run [run
   run      invoke remote run.sh; default GPU is auto, and source is not synchronized implicitly
            Example: cloud.sh run -d --name ame2-official train --task Ame2-G1-Gaze --num_envs 4096
 Environment: CLOUD_HOST=tencent-231 CLOUD_PORT=22 CLOUD_ROOT=/diff/dzp_is_sb/ame2-research
-             IMAGE=ame2:research CLOUD_SHM_SIZE=32g CLOUD_CPUS CLOUD_MEMORY_LIMIT
+             IMAGE=ame2:research CLOUD_SHM_SIZE=32g CLOUD_CPUS CLOUD_MEMORY_LIMIT AME2_NCCL_COMPAT=1
+             Explicit NCCL_CUMEM_HOST_ENABLE, NCCL_P2P_DISABLE, NCCL_IB_DISABLE,
+             NCCL_SOCKET_IFNAME, NCCL_DEBUG, NCCL_DEBUG_SUBSYS are forwarded to run.sh.
 Requires existing Docker, NVIDIA Container Toolkit, SSH key login, rsync, gzip, sha256sum.
 Passwords and API keys are never written to this script or sent in command-line arguments.
 HELP
@@ -118,6 +120,10 @@ case "$MODE" in
         REMOTE_RUN=(env "IMAGE=$IMAGE" "SHM_SIZE=${CLOUD_SHM_SIZE:-32g}")
         [[ -z "${CLOUD_CPUS:-}" ]] || REMOTE_RUN+=("CPUS=$CLOUD_CPUS")
         [[ -z "${CLOUD_MEMORY_LIMIT:-}" ]] || REMOTE_RUN+=("MEMORY_LIMIT=$CLOUD_MEMORY_LIMIT")
+        [[ -z "${AME2_NCCL_COMPAT:-}" ]] || REMOTE_RUN+=("AME2_NCCL_COMPAT=$AME2_NCCL_COMPAT")
+        for option in NCCL_CUMEM_HOST_ENABLE NCCL_P2P_DISABLE NCCL_IB_DISABLE NCCL_SOCKET_IFNAME NCCL_DEBUG NCCL_DEBUG_SUBSYS; do
+            [[ -z "${!option:-}" ]] || REMOTE_RUN+=("$option=${!option}")
+        done
         remote mkdir -p "$REMOTE_ROOT/.cache"
         remote flock -w 30 "$REMOTE_ROOT/.cache/gpu-launch.lock" "${REMOTE_RUN[@]}" \
             "$REMOTE_ROOT/container/run.sh" -g auto "$@" ;;

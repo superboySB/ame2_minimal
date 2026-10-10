@@ -15,8 +15,9 @@ Options:
   --dry-run       Print the shell-escaped Docker command without running it
 Environment: IMAGE=ame2:research, SHM_SIZE=8g, CPUS, MEMORY_LIMIT, MASTER_PORT=29500,
  CACHE_PREFIX=ame2, WANDB_MODE=disabled, WANDB_API_KEY, AME2_LOCAL_ASSET_ROOT.
+ AME2_NCCL_COMPAT=1 selects the tested single-host NCCL fallback; explicit NCCL_* overrides are forwarded.
 Examples:
-  container/run.sh -g 0 play --task Ame2-G1-Gaze-Play --checkpoint /workspace/ame2-minimal/modelzoo/g1/gaze/model.pt
+  container/run.sh -g 0 play --task Ame2-G1-Gaze-Play --checkpoint /workspace/ame2-minimal/modelzoo/g1_gaze_64000env_10h/model_2400.pt
   container/run.sh -g auto -d --name ame2-train train --task Ame2-G1-Gaze --num_envs 4096
   container/run.sh cmd /isaac-sim/python.sh scripts/list_envs.py
 HELP
@@ -95,6 +96,15 @@ RUN=(docker run --name "$NAME" --gpus "\"device=$GPUS\"" --network host
 [[ -z "${CPUS:-}" ]] || RUN+=(--cpus "$CPUS")
 [[ -z "${MEMORY_LIMIT:-}" ]] || RUN+=(--memory "$MEMORY_LIMIT")
 [[ -z "${WANDB_API_KEY:-}" ]] || RUN+=(-e WANDB_API_KEY)
+[[ "${AME2_NCCL_COMPAT:-0}" =~ ^[01]$ ]] || { echo 'AME2_NCCL_COMPAT must be 0 or 1' >&2; exit 2; }
+if [[ "${AME2_NCCL_COMPAT:-0}" == 1 ]]; then
+    # Opt-in combination tested on the cloud's cross-NUMA RTX PRO GPUs.
+    RUN+=(-e NCCL_CUMEM_HOST_ENABLE=0 -e NCCL_P2P_DISABLE=1 -e NCCL_IB_DISABLE=1
+        -e NCCL_SOCKET_IFNAME=lo -e NCCL_DEBUG=INFO -e NCCL_DEBUG_SUBSYS=INIT,GRAPH,ENV)
+fi
+for option in NCCL_CUMEM_HOST_ENABLE NCCL_P2P_DISABLE NCCL_IB_DISABLE NCCL_SOCKET_IFNAME NCCL_DEBUG NCCL_DEBUG_SUBSYS; do
+    [[ -z "${!option:-}" ]] || RUN+=(-e "$option")
+done
 if [[ -n "${AME2_LOCAL_ASSET_ROOT:-}" ]]; then
     [[ -d "$AME2_LOCAL_ASSET_ROOT" ]] || { echo 'AME2_LOCAL_ASSET_ROOT is not a directory' >&2; exit 2; }
     RUN+=(-e AME2_ASSET_ROOT=/opt/ame2-assets -v "$AME2_LOCAL_ASSET_ROOT:/opt/ame2-assets:ro")
