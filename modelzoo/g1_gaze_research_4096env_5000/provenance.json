@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "kind": "official_4096env_5000_research_checkpoint",
+  "published_utc": "2026-10-10T14:25:07.742144+00:00",
+  "branch": "research",
+  "checkpoint": {
+    "path": "model_4999.pt",
+    "sha256": "0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e",
+    "bytes": 82511607,
+    "iteration": 4999
+  },
+  "configuration": {
+    "task": "Ame2-G1-Gaze",
+    "num_envs": 4096,
+    "seed": 42,
+    "world_size": 1,
+    "optimizer": "muon",
+    "use_mixed_precision": true,
+    "critic_heads": 23,
+    "resumed": false,
+    "iterations_completed": 5000
+  },
+  "files": {
+    "model_4999.pt": {
+      "sha256": "0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e",
+      "bytes": 82511607
+    },
+    "params/env.yaml": {
+      "sha256": "96827549bc911643952a979227ef9f68adfdc6900e8efa41d0156f0f1ef7dd5f",
+      "bytes": 78434
+    },
+    "params/agent.yaml": {
+      "sha256": "5a72381565cf9db7ce76a0ae8f9c0937a02efc312244f3c03f7c9aa12af70695",
+      "bytes": 1409
+    }
+  },
+  "original_training": {
+    "run": "ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full",
+    "command": [
+      "scripts/rsl_rl/train.py",
+      "--headless",
+      "--task",
+      "Ame2-G1-Gaze",
+      "--num_envs",
+      "4096",
+      "--max_iterations",
+      "5000",
+      "--seed",
+      "42",
+      "--experiment_name",
+      "research_official_full",
+      "--run_name",
+      "full",
+      "--logger",
+      "tensorboard",
+      "--result_json",
+      "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_full/train_result.json",
+      "agent.save_interval=200"
+    ],
+    "process_wall_seconds": 34920.86524710804,
+    "image_config_digest": "sha256:6333e6323c90d66b81746da1ca2add459fa30019790b7e63524a26d0797fad46",
+    "runtime_source_revision": "7cb5e1e53e1f14cf9f9bcd08ddffa67bbf37f469",
+    "physical_gpu_index": 2,
+    "gpu_uuid": "GPU-a09fb05f-374a-3512-7ed9-5d3c0c6d224e",
+    "source_manifest_sha256": "54a8bbc6ab6fd492612d48be5dc8cc11c40aef119bbad3fabb5ee8fc04462cae",
+    "evidence_directory": "usage_assets/diagnostics/full_completed_training",
+    "evidence_sha256": {
+      "train_result.json": "6033f493dfb02b235f298262fb28218c22c774d421adb49f152617a971bac1b7",
+      "monitor_result.json": "3266c30a19bbb24007349983fc077e39b5973b4eb60a7e03528855ae8bf3c5e3",
+      "checkpoint_audit.json": "e52cdaf4a7d3afed4f29e8289ca32afad1362d59670f3aae1194d79cdb00cb38",
+      "local_transfer_validation.json": "afd94ee7b306b1ec5e645cc19e8f213bd73016e05c7e40b70586c660e1bd0d76",
+      "job.json": "914144ec70ca5ea79894666591b0410d0b8d5997bbb46216287fc64119e7c6db",
+      "validation.json": "90ab15761a76af69936bcb1cbf22c141889b672619c3eb216fb286829819c983",
+      "progress.json": "051c21ba20451047b83550a721d51f8595a56e279377e49592f648b70e2e5dad",
+      "source-sha256.txt": "54a8bbc6ab6fd492612d48be5dc8cc11c40aef119bbad3fabb5ee8fc04462cae",
+      "commands.txt": "93563bacc8eafb52b1f8efd21bc87c8cf3a3b471617834c330a6d214c4a6dee0",
+      "exit_code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  },
+  "deployment": {
+    "image": "ame2:research",
+    "checkpoint_available_via": "container/run.sh read-only modelzoo bind mount; future image builds also copy modelzoo",
+    "frozen_image_contains_this_new_checkpoint": false
+  },
+  "scope": [
+    "Fresh teacher training from iteration 0 through 4999; the original published model_2400.pt is kept separately.",
+    "Training completion, finite parameters and complete scalar records do not by themselves prove reliable task performance.",
+    "This checkpoint uses simulated privileged mapping and is not evidence of real robot deployment.",
+    "The original completed process did not use the subsequently applied explicit TensorBoard writer close patch."
+  ]
+}

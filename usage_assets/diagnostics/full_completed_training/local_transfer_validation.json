@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "kind": "official_full_local_transfer_validation",
+  "passed": true,
+  "as_of_utc": "2026-10-10T14:23:35.699094+00:00",
+  "limitations": [
+    "Training completion and finite optimization do not establish reliable task performance; final policy evaluation is separate.",
+    "GPU memory is a 2-second nvidia-smi sample maximum for the selected device, not an exact allocator maximum.",
+    "The original process did not receive the later detached TensorBoard-close fix."
+  ],
+  "checkpoint_sha256_checks": [
+    {
+      "iteration": 0,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_0.pt",
+      "bytes": 82509875,
+      "sha256": "41d9cfb01196aff788b92eec69d3bd84cf753f43c754936602adff7afb914de0",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 200,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_200.pt",
+      "bytes": 82511051,
+      "sha256": "9c25eb3c77ccfc1b996bd618ede64bb4583cdc911c6558f4b3279d64f2d71296",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 400,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_400.pt",
+      "bytes": 82511051,
+      "sha256": "6510cc0957e5ab4fc6ca00ccdde7f632aa162adf3fd9eb1c05ffeba030649d27",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 600,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_600.pt",
+      "bytes": 82511051,
+      "sha256": "923198e52fbf5ccb6ee2e7413110b6cf4fc0df827047f3b8bf29a49277c2c17f",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 800,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_800.pt",
+      "bytes": 82511051,
+      "sha256": "c450017434e2e86688c1364dc4b711cdc84a92b01818dc931f25cb0876de2b39",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 1000,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_1000.pt",
+      "bytes": 82511415,
+      "sha256": "88aee3d1854079e4854499699689b42b37a2ce4fbdde3b5c1fe7e5c6b7f09ac9",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 1200,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_1200.pt",
+      "bytes": 82511415,
+      "sha256": "2ee0f5c3571937680e8602bd68d1e2168ee86153e63e4b34f7d277b7f01a2ac1",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 1400,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_1400.pt",
+      "bytes": 82511415,
+      "sha256": "d08efbe8dbcd7c504cb5f8c110bd410ef7d2406f013fddb01a18b2064c99e034",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 1600,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_1600.pt",
+      "bytes": 82511415,
+      "sha256": "69bc50a2cdb9b9932d18584869d2a0132e415a499ff5c28fb77945b150a0bc05",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 1800,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_1800.pt",
+      "bytes": 82511415,
+      "sha256": "12f2005bb92432bb6d28a69af0d4dbbc8bfb1a48ddc5b87fbc74b48941c2bc74",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 2000,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_2000.pt",
+      "bytes": 82511415,
+      "sha256": "ed8aae68602f7e8cb9d5cd9c4179098276d2fef4c0f00ec9d4668fd1f4c3b464",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 2200,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_2200.pt",
+      "bytes": 82511415,
+      "sha256": "acc885c83cd808b8da8f6534cd42933bd6b6b27eb96f5bb05ccc62d4f28332b3",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 2400,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_2400.pt",
+      "bytes": 82511415,
+      "sha256": "fb027cd013069f7ba22c857c9f16d8a320f772f1be8d2fa17c87f757deade361",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 2600,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_2600.pt",
+      "bytes": 82511415,
+      "sha256": "c86648404894ebc77f5534da59d155fa6d370ed61c665e75be1e24196fcf3714",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 2800,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_2800.pt",
+      "bytes": 82511415,
+      "sha256": "bfe33de87555405319ff02087e0e00f43c3f47aaecea90e2953a073f381cdcbd",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 3000,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_3000.pt",
+      "bytes": 82511415,
+      "sha256": "a2924f2038f7e202abe90e5b51d2c5beb7b5f41c3327d72f5a565d4183022ab2",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 3200,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_3200.pt",
+      "bytes": 82511415,
+      "sha256": "221ab2dd30a910defb3ec1d771b31a5d92b2d6a74235f4c1ad19fa1c26248fda",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 3400,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_3400.pt",
+      "bytes": 82511607,
+      "sha256": "e1c9c8697b383b52cebaa9783c2a28be9b3933fb12fba25047ba5b82e0c1e1b5",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 3600,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_3600.pt",
+      "bytes": 82511607,
+      "sha256": "f577c2ade19349bfd12613c44ee3ae4a94900bd6719f46ce04fec8aeebff4850",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 3800,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_3800.pt",
+      "bytes": 82511607,
+      "sha256": "7dcdd6d23654f9fd8c515dddc44cbbd2540270548b6281360432b3b97266eb58",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 4000,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4000.pt",
+      "bytes": 82511607,
+      "sha256": "328ec1ac30f7f8426ae599be5ab4af4c0a29c23cbcfbc936d74516bb9fcef47a",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 4200,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4200.pt",
+      "bytes": 82511607,
+      "sha256": "2fb92c09de01ce94b3e0e0a659f2d925d931f0fd0d5790c935f781a4e3e815b7",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 4400,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4400.pt",
+      "bytes": 82511607,
+      "sha256": "c9efced896998ff35db60e12e01ed782724c27c49e643709de9cb392b03b4ec9",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 4600,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4600.pt",
+      "bytes": 82511607,
+      "sha256": "e7a3ec7d753b23cc12ee9828909db6236d8390268a69ac5d5ccb1503a4fd0dd6",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 4800,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4800.pt",
+      "bytes": 82511607,
+      "sha256": "d72f2fd6d3134155961a87c3712bece24ab39540629ffa9b4a5f4678bb07a1f8",
+      "matches_cloud_audit": true
+    },
+    {
+      "iteration": 4999,
+      "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4999.pt",
+      "bytes": 82511607,
+      "sha256": "0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e",
+      "matches_cloud_audit": true
+    }
+  ],
+  "loss_history": {
+    "Loss/value": {
+      "count": 5000,
+      "first_step": 0,
+      "last_step": 4999,
+      "steps_exact_0_through_4999": true,
+      "finite": true,
+      "last": 0.0606328547000885,
+      "minimum": 0.0031700669787824154,
+      "maximum": 0.91551673412323
+    },
+    "Loss/surrogate": {
+      "count": 5000,
+      "first_step": 0,
+      "last_step": 4999,
+      "steps_exact_0_through_4999": true,
+      "finite": true,
+      "last": -0.0012089357478544116,
+      "minimum": -0.02221001125872135,
+      "maximum": 0.005848290864378214
+    },
+    "Loss/entropy": {
+      "count": 5000,
+      "first_step": 0,
+      "last_step": 4999,
+      "steps_exact_0_through_4999": true,
+      "finite": true,
+      "last": 13.595958709716797,
+      "minimum": 13.043875694274902,
+      "maximum": 32.52592468261719
+    },
+    "Loss/entropy_coef": {
+      "count": 5000,
+      "first_step": 0,
+      "last_step": 4999,
+      "steps_exact_0_through_4999": true,
+      "finite": true,
+      "last": 0.002426062012091279,
+      "minimum": 0.002426062012091279,
+      "maximum": 0.003999600186944008
+    },
+    "Loss/symmetry": {
+      "count": 5000,
+      "first_step": 0,
+      "last_step": 4999,
+      "steps_exact_0_through_4999": true,
+      "finite": true,
+      "last": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    "Loss/auxiliary": {
+      "count": 5000,
+      "first_step": 0,
+      "last_step": 4999,
+      "steps_exact_0_through_4999": true,
+      "finite": true,
+      "last": 7.925665101993218e-08,
+      "minimum": 0.0,
+      "maximum": 1.1258060794716584e-06
+    },
+    "Loss/learning_rate": {
+      "count": 5000,
+      "first_step": 0,
+      "last_step": 4999,
+      "steps_exact_0_through_4999": true,
+      "finite": true,
+      "last": 1.4999999621068127e-05,
+      "minimum": 9.999999747378752e-06,
+      "maximum": 0.0010000000474974513
+    }
+  },
+  "gpu_memory": {
+    "physical_gpu_index": 2,
+    "gpu_uuid": "GPU-a09fb05f-374a-3512-7ed9-5d3c0c6d224e",
+    "container_gpu_indices": [
+      0
+    ],
+    "samples": 17467,
+    "sampling_interval_seconds": 2,
+    "peak_memory_mib": 19754.0,
+    "peak_memory_gib": 19.291015625,
+    "first_peak_sample_timestamp": "2026/10/10 05:31:57.204"
+  },
+  "job_wall_seconds": 34937.0,
+  "training_process_wall_seconds": 34920.86524710804,
+  "printed_runner_training_seconds": 34862.02,
+  "started_utc": "2026-10-10T04:37:56Z",
+  "ended_utc": "2026-10-10T14:20:13Z",
+  "final_checkpoint": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_4999.pt",
+  "final_checkpoint_sha256": "0d859f33e5e642961f01fc078bde64e73ee9dd5e4ff0fca014b9637c7ce8b80e",
+  "saved_checkpoints_verified": 26,
+  "original_source_manifest_sha256": "54a8bbc6ab6fd492612d48be5dc8cc11c40aef119bbad3fabb5ee8fc04462cae",
+  "original_cloud_audit_sha256": "e52cdaf4a7d3afed4f29e8289ca32afad1362d59670f3aae1194d79cdb00cb38",
+  "validation_wall_seconds": 4.981198374880478
+}

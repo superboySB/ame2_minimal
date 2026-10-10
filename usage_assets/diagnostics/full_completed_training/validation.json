@@ -1,0 +1,8 @@
+{
+  "run": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full",
+  "iteration": 4999,
+  "optimizer": "muon",
+  "mixed_precision": true,
+  "critic_heads": 23,
+  "passed": true
+}
