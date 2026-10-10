@@ -4731,6 +4731,7 @@
         "3857410             11:15               /isaac-sim/kit/python/bin/python3 scripts/rsl_rl/train.py --headless --task Ame2-G1-Gaze --num_envs 4096 --max_iterations 5000 --seed 42 --experiment_name research_official_full --run_name full --logger tensorboard --result_json /workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_full/train_result.json agent.save_interval=200"
       ],
       "path": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_full/progress.json",
+      "snapshot_path": "diagnostics/full_progress.json",
       "sha256": "082e505e79f90e39457b2c5a3f0b7554fa383a8fbfce1f883dbdf9c7f9114647"
     },
     {
