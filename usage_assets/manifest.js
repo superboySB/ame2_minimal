@@ -4775,6 +4775,7 @@ window.AME2_VIDEO_MANIFEST = {
       "start_iteration": 0,
       "loaded_iteration": null,
       "path": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_full/train_result.json",
+      "snapshot_path": "diagnostics/full_initial_train_result.json",
       "sha256": "b14d20fe67641f5fe4168fa6c165cbe401e5d0d51c386ec09d9defe415695d83"
     },
     {

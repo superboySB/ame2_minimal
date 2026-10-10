@@ -366,6 +366,8 @@ teacher JIT 路径与 mapping checkpoint 路径见 note.md 第 7 节。核验 mi
 
 [验收快照](usage_assets/validation_snapshot.json)保存采集时间、Docker image ID、GPU、seed、原始报告路径与 SHA-256；suite 的每个 job 记录实际代码文件 SHA。新的实验写入新目录和独立 trial ID，避免把失败重跑覆盖成一次从未失败过的实验。
 
+持续写入的完整训练进度、初始 manifest 和 GPU 日志另有 `snapshot_path` 指向保留历史哈希的静态副本；它们记录早期状态，完整训练仍以最终 manifest、审计和独立策略评估判定。
+
 ## 7. 本分支为复现修复的入口
 
 - **容器构建**：修复 NVIDIA 预打包环境中 setuptools / packaging 的兼容性，固定基础镜像 digest；依赖修复只发生在 Docker 层。
