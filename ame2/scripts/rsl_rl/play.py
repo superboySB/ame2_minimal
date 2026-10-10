@@ -390,6 +390,9 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
     agent_cfg.device = env_cfg.sim.device
     env_cfg.sim.use_fabric = not args_cli.disable_fabric
+    if args_cli.disable_fabric and str(env_cfg.sim.device).startswith("cuda") and (not args_cli.headless or args_cli.video):
+        print("[INFO] GPU physics runs with Fabric disabled, but rendered geometry cannot update; "
+              "keep default Fabric enabled for GUI/video.")
 
     # specify directory for logging experiments
     log_root_path = os.path.join("logs", "rsl_rl", agent_cfg.experiment_name)
@@ -632,6 +635,16 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         hip_acc_viz_update = None
 
     obs = env.get_observations()
+
+    # Initialize task-configured tracking once the GUI and robot both exist.
+    # The GUI follow selector's World label alone does not describe the active
+    # controller state, so record the actual origin type in play_result.json.
+    camera_controller = getattr(env.unwrapped, "viewport_camera_controller", None)
+    if not args_cli.headless and camera_controller is not None and env_cfg.viewer.origin_type == "asset_root":
+        camera_controller.set_view_env_index(env_cfg.viewer.env_index)
+        camera_controller.update_view_to_asset_root(env_cfg.viewer.asset_name)
+        camera_controller.update_view_location(eye=(-3.2, -4.0, 2.6), lookat=(1.0, 0.0, 0.4))
+        print(f"[INFO] GUI camera follows {env_cfg.viewer.asset_name} in env {env_cfg.viewer.env_index}")
     
     # print observation group shapes
     print("\n" + "=" * 50)
@@ -1037,6 +1050,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         "video": args_cli.video, "export": args_cli.export,
         "reached_goal": video_reached if args_cli.video else None,
         "early_termination": video_early_done if args_cli.video else None,
+        "viewer_origin_type": camera_controller.cfg.origin_type if camera_controller is not None else None,
         "command": original_command,
     }
     with open(os.path.join(log_dir, "play_result.json"), "w") as handle:
