@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "kind": "synthetic_logger_integration",
+  "passed": true,
+  "python": "3.11.13",
+  "torch": "2.7.0+cu128",
+  "steps": 2000,
+  "logger_source": "/workspace/ame2-minimal/rsl_rl/rsl_rl/utils/logger.py",
+  "logger_source_sha256": "42b7b8b9bc8cc62c8c53110d261940ec1925bc080bca38f7c5c251e6a673b59a",
+  "nvidia_visible_devices": "void",
+  "limitations": [
+    "Synthetic scalar logging only; no policy, simulator or training is run.",
+    "This is not evidence for the original 5000-iteration cloud training.",
+    "This changes future processes only; an existing loaded writer is unchanged."
+  ],
+  "none_writer_unchanged": true,
+  "external_writer_behavior": {
+    "wandb": {
+      "stop_calls": 1,
+      "close_calls": 0
+    },
+    "neptune": {
+      "stop_calls": 1,
+      "close_calls": 0
+    }
+  },
+  "queued_records_before_stop": 13998,
+  "writer_closed": true,
+  "worker_stopped": true,
+  "tags": {
+    "Loss/value": {
+      "count": 2000,
+      "first_step": 0,
+      "last_step": 1999,
+      "steps_contiguous": true,
+      "finite": true,
+      "values_match": true
+    },
+    "Loss/surrogate": {
+      "count": 2000,
+      "first_step": 0,
+      "last_step": 1999,
+      "steps_contiguous": true,
+      "finite": true,
+      "values_match": true
+    },
+    "Loss/entropy": {
+      "count": 2000,
+      "first_step": 0,
+      "last_step": 1999,
+      "steps_contiguous": true,
+      "finite": true,
+      "values_match": true
+    },
+    "Loss/entropy_coef": {
+      "count": 2000,
+      "first_step": 0,
+      "last_step": 1999,
+      "steps_contiguous": true,
+      "finite": true,
+      "values_match": true
+    },
+    "Loss/symmetry": {
+      "count": 2000,
+      "first_step": 0,
+      "last_step": 1999,
+      "steps_contiguous": true,
+      "finite": true,
+      "values_match": true
+    },
+    "Loss/auxiliary": {
+      "count": 2000,
+      "first_step": 0,
+      "last_step": 1999,
+      "steps_contiguous": true,
+      "finite": true,
+      "values_match": true
+    },
+    "Loss/learning_rate": {
+      "count": 2000,
+      "first_step": 0,
+      "last_step": 1999,
+      "steps_contiguous": true,
+      "finite": true,
+      "values_match": true
+    }
+  },
+  "event_files": [
+    {
+      "name": "events.out.tfevents.1791629632.d97c10db8d43.11.0",
+      "bytes": 741178,
+      "sha256": "61fa74de7fba06f2807173f695a2dc2543bff04190ed00864ad3e6f7fa28a402"
+    }
+  ],
+  "temporary_event_files_removed_after_validation": true,
+  "cuda_initialized": false,
+  "wall_seconds": 0.29710977198556066
+}

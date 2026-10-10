@@ -277,6 +277,8 @@ class Logger:
         """Stop the logging writer."""
         if self.writer is not None and self.logger_type in ["neptune", "wandb"]:
             self.writer.stop()  # type: ignore
+        elif self.writer is not None and self.logger_type == "tensorboard":
+            self.writer.close()
 
     def _store_code_state(self) -> list[str]:
         """Store the current git diff of the code repositories involved in the experiment."""
