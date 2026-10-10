@@ -1,0 +1,296 @@
+{
+  "diagnostics": [
+    {
+      "source": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cli/reward_debug_plots/reward_curves.pdf",
+      "source_sha256": "ca41c046307247c33dc120b02187af2b2aed50acb436bfc23f309b58d068124e",
+      "file": "reward_curves.pdf",
+      "sha256": "ca41c046307247c33dc120b02187af2b2aed50acb436bfc23f309b58d068124e"
+    },
+    {
+      "source": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cli/reward_debug_plots/debug_plots.pdf",
+      "source_sha256": "15e8b0cab423efa8f482c9fe42876ee2bb522579b7bbaf5149e8803375392b36",
+      "file": "debug_plots.pdf",
+      "sha256": "15e8b0cab423efa8f482c9fe42876ee2bb522579b7bbaf5149e8803375392b36"
+    },
+    {
+      "source": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_extras/2026-10-10_04-25-26_train_video_io/io_descriptors/IO_descriptors.yaml",
+      "source_sha256": "671ca25cd589e77fafe57627b99cf9220bdcfb7999df66cd3f3d754478e393c3",
+      "file": "IO_descriptors.yaml",
+      "sha256": "671ca25cd589e77fafe57627b99cf9220bdcfb7999df66cd3f3d754478e393c3",
+      "report": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/extras/train_video_io/train_result.json",
+      "report_sha256": "c72aa016ccf2c9f2c540d203b8bc7d72d9544294b9a3e3ad34a6a50e3497ccce"
+    },
+    {
+      "source": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/image_sync.json",
+      "source_sha256": "63387881272a6dd7fe80606669cc0ddad4a603b8880b1e41aad6803921714ae4",
+      "file": "image_sync.json",
+      "sha256": "63387881272a6dd7fe80606669cc0ddad4a603b8880b1e41aad6803921714ae4"
+    },
+    {
+      "source": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/browser/browser_result.json",
+      "source_sha256": "5a069fef0f39b7e060b09b849d8ef2328c8ced2c95d0dea5db249201f9444cee",
+      "file": "browser_result.json",
+      "sha256": "5a069fef0f39b7e060b09b849d8ef2328c8ced2c95d0dea5db249201f9444cee"
+    },
+    {
+      "source": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_full/progress.json",
+      "source_sha256": "082e505e79f90e39457b2c5a3f0b7554fa383a8fbfce1f883dbdf9c7f9114647",
+      "file": "full_progress.json",
+      "sha256": "082e505e79f90e39457b2c5a3f0b7554fa383a8fbfce1f883dbdf9c7f9114647"
+    }
+  ],
+  "gui": [
+    {
+      "source": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/gui-webagg/curve_015.png",
+      "source_sha256": "3c7296a1d01e643b72b6e7e7c4f009288785a6c5434c206dec60d4b552eeaa0e",
+      "file": "hip_acceleration_gui.png",
+      "sha256": "3c7296a1d01e643b72b6e7e7c4f009288785a6c5434c206dec60d4b552eeaa0e",
+      "capture": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/gui-webagg/capture.json",
+      "capture_sha256": "92d465b70eb22de2618e3af8d85bdf0cc7446889a4d03e47b62970e25b65701e",
+      "meaning": "Actual rendered WebAgg curve, not independently decoded sensor samples"
+    },
+    {
+      "source": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/gui-fabric/isaac-gui-fabric.png",
+      "source_sha256": "ea5ca60f1b1c6451b7c47e4610eeb20da7abec96d7499d75bda301669b9a17fb",
+      "file": "isaac_gui_g1.png",
+      "sha256": "ea5ca60f1b1c6451b7c47e4610eeb20da7abec96d7499d75bda301669b9a17fb",
+      "report": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/gui-fabric/play_result.json",
+      "report_sha256": "f0742a2590702dd503e65187e157b36ebe228f524b34fed2b86a32845effe2a0",
+      "meaning": "Actual X11 Isaac GUI with default Fabric and visible G1"
+    }
+  ],
+  "training": [
+    {
+      "name": "base_muon_bf16",
+      "result": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_matrix_final/matrix/base_muon_bf16/train_result.json",
+      "result_sha256": "afd79d2559b4750ce6d4251ce1522a4d8d145e6a13c717aa53e07477db322980",
+      "audit": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_matrix_final/matrix/base_muon_bf16/checkpoint_audit.json",
+      "audit_sha256": "4e76ecad9f18a3f737f3628cab8b2cf785804190cc927bf15da28176306c3149",
+      "events": [
+        {
+          "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_matrix/2026-10-10_04-13-38_base_muon_bf16/events.out.tfevents.1791605638.pro5000-6.3061.0",
+          "sha256": "a64045651919d6a5905b58324b9f65747ad2345ed6bb282779db388ce4c7b93f"
+        }
+      ],
+      "num_envs": 64,
+      "seed": 42,
+      "iterations_completed": 3,
+      "scalars": {
+        "Loss/value": [
+          {
+            "step": 0,
+            "value": 0.09785386919975281
+          },
+          {
+            "step": 1,
+            "value": 1.1822606325149536
+          },
+          {
+            "step": 2,
+            "value": 0.455315500497818
+          }
+        ],
+        "Loss/surrogate": [
+          {
+            "step": 0,
+            "value": -0.06755126267671585
+          },
+          {
+            "step": 1,
+            "value": -0.03955763578414917
+          },
+          {
+            "step": 2,
+            "value": -0.04694338142871857
+          }
+        ]
+      },
+      "parameter_change": {
+        "first_iteration": 0,
+        "last_iteration": 2,
+        "actor": {
+          "changed_tensors": 35,
+          "max_absolute_parameter_change": 0.011884171515703201
+        },
+        "critic": {
+          "changed_tensors": 102,
+          "max_absolute_parameter_change": 0.02095552533864975
+        }
+      }
+    },
+    {
+      "name": "base_adam_fp32",
+      "result": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_matrix_final/matrix/base_adam_fp32/train_result.json",
+      "result_sha256": "261edbde921a25c02236b822d7d2cd24eab5987b70ad9957c2179641dfc27161",
+      "audit": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_matrix_final/matrix/base_adam_fp32/checkpoint_audit.json",
+      "audit_sha256": "4658caf27442a3f90e1299c99735eb78ac43da751bd4869aac352e83bed6b74c",
+      "events": [
+        {
+          "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_matrix/2026-10-10_04-14-19_base_adam_fp32/events.out.tfevents.1791605680.pro5000-6.3598.0",
+          "sha256": "f24949c32d84c4df2a32948575bf0bf7670099591e534e161bf4bd939b139ac1"
+        }
+      ],
+      "num_envs": 64,
+      "seed": 42,
+      "iterations_completed": 3,
+      "scalars": {
+        "Loss/value": [
+          {
+            "step": 0,
+            "value": 0.09631115943193436
+          },
+          {
+            "step": 1,
+            "value": 1.16432523727417
+          },
+          {
+            "step": 2,
+            "value": 0.34098267555236816
+          }
+        ],
+        "Loss/surrogate": [
+          {
+            "step": 0,
+            "value": -0.004991781432181597
+          },
+          {
+            "step": 1,
+            "value": -0.03867940977215767
+          },
+          {
+            "step": 2,
+            "value": -0.035792283713817596
+          }
+        ]
+      },
+      "parameter_change": {
+        "first_iteration": 0,
+        "last_iteration": 2,
+        "actor": {
+          "changed_tensors": 35,
+          "max_absolute_parameter_change": 0.002433568239212036
+        },
+        "critic": {
+          "changed_tensors": 102,
+          "max_absolute_parameter_change": 0.0028914492577314377
+        }
+      }
+    },
+    {
+      "name": "gaze_muon_bf16",
+      "result": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_matrix_final/matrix/gaze_muon_bf16/train_result.json",
+      "result_sha256": "d593a5b36d9f97e024bbc65350769b8ffd11b61a700f3cd6a9526bb65f76b9bd",
+      "audit": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_matrix_final/matrix/gaze_muon_bf16/checkpoint_audit.json",
+      "audit_sha256": "e0057321b4beb56c4fced7d71d3d054b583b1e6259b30b87627019982ff37ba1",
+      "events": [
+        {
+          "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_matrix/2026-10-10_04-15-00_gaze_muon_bf16/events.out.tfevents.1791605721.pro5000-6.4135.0",
+          "sha256": "128341aa07573f8981632af09c0959e28d81f046c511c8b3ac4d1300a953498f"
+        }
+      ],
+      "num_envs": 64,
+      "seed": 42,
+      "iterations_completed": 3,
+      "scalars": {
+        "Loss/value": [
+          {
+            "step": 0,
+            "value": 0.10917721688747406
+          },
+          {
+            "step": 1,
+            "value": 0.9749748706817627
+          },
+          {
+            "step": 2,
+            "value": 0.4575260877609253
+          }
+        ],
+        "Loss/surrogate": [
+          {
+            "step": 0,
+            "value": -0.06777631491422653
+          },
+          {
+            "step": 1,
+            "value": -0.04006539657711983
+          },
+          {
+            "step": 2,
+            "value": -0.041488513350486755
+          }
+        ]
+      },
+      "parameter_change": {
+        "first_iteration": 0,
+        "last_iteration": 2,
+        "actor": {
+          "changed_tensors": 41,
+          "max_absolute_parameter_change": 0.01295718178153038
+        },
+        "critic": {
+          "changed_tensors": 102,
+          "max_absolute_parameter_change": 0.020699886605143547
+        }
+      }
+    },
+    {
+      "name": "gaze_adam_fp32",
+      "result": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_matrix_final/matrix/gaze_adam_fp32/train_result.json",
+      "result_sha256": "a92254f914aa5aa796283a12786657c2fc69612066fd2627c7d29375d6cad1e0",
+      "audit": "/workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_matrix_final/matrix/gaze_adam_fp32/checkpoint_audit.json",
+      "audit_sha256": "661f463f64da9fdcdaf4eb429ad1682fdcb97b1527e6569b9f6fedf0feb419f6",
+      "events": [
+        {
+          "path": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_matrix/2026-10-10_04-15-47_gaze_adam_fp32/events.out.tfevents.1791605768.pro5000-6.4672.0",
+          "sha256": "6a62887bd705cd385f4c57e8ca115de8f6c2e629ff024dbe2d905d6ba089da7d"
+        }
+      ],
+      "num_envs": 64,
+      "seed": 42,
+      "iterations_completed": 3,
+      "scalars": {
+        "Loss/value": [
+          {
+            "step": 0,
+            "value": 0.10742498934268951
+          },
+          {
+            "step": 1,
+            "value": 1.1552213430404663
+          },
+          {
+            "step": 2,
+            "value": 0.4075871706008911
+          }
+        ],
+        "Loss/surrogate": [
+          {
+            "step": 0,
+            "value": 0.0015616618329659104
+          },
+          {
+            "step": 1,
+            "value": -0.038989100605249405
+          },
+          {
+            "step": 2,
+            "value": -0.03248449042439461
+          }
+        ]
+      },
+      "parameter_change": {
+        "first_iteration": 0,
+        "last_iteration": 2,
+        "actor": {
+          "changed_tensors": 41,
+          "max_absolute_parameter_change": 0.002553250640630722
+        },
+        "critic": {
+          "changed_tensors": 102,
+          "max_absolute_parameter_change": 0.0029217256233096123
+        }
+      }
+    }
+  ]
+}

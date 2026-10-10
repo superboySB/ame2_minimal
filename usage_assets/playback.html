@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AME-2 G1 · 可复现实验</title>
+<style>
+:root{color-scheme:dark;--bg:#10151b;--panel:#1b242e;--text:#e6edf3;--muted:#a7b7c8;--line:#344350;--accent:#76ddbc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:1400px;margin:auto;padding:38px 24px 64px}h1{font-size:clamp(24px,4vw,40px);line-height:1.2;margin:0 0 14px}p{max-width:1050px;color:var(--muted);margin:10px 0}a{color:var(--accent)}.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:24px 0}select,button{font:inherit;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 12px}#cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,390px),1fr));gap:22px}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}.card h2{font-size:20px;margin:0}.card .content{padding:18px}.tag{display:inline-block;background:#293b44;color:var(--accent);padding:2px 9px;border-radius:6px;font-size:13px;margin:8px 0}.bad{color:#ffc1ab;background:#49332c}.neutral{color:#dbd8a3;background:#403f2b}video{width:100%;display:block;background:#080b0e;aspect-ratio:16/9}.facts{font-size:14px;margin:8px 0;color:var(--muted)}details{font-size:13px;border-top:1px solid var(--line);padding-top:10px;margin-top:12px}summary{cursor:pointer;color:var(--accent)}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.6 ui-monospace,monospace}label{font-size:14px}footer{margin-top:30px;color:var(--muted);font-size:14px}.empty{padding:30px;background:var(--panel);border-radius:12px}.hint{font-size:14px}
+</style>
+<main>
+  <h1>AME-2 G1 · 可复现实验</h1>
+  <p>真实 Isaac Sim rollout 的离线播放页。每张卡对应一个有来源报告的录像，支持暂停、拖动和调速；进入目标半径、提前终止与数值检查分别展示。完整复现命令见 <a href="../note.md">note.md</a> 和 <a href="../usage.md">usage.md</a>。</p>
+  <p class="hint">MP4 保留源视频时长；图文手册中的 GIF 为完整片段均匀采样的定长预览，长片加速、短片慢放。每段画面显示 env 0，其他环境的统计保存在来源报告。自动重置后的单片结果不等于论文成功率。</p>
+  <div class="bar">
+    <label>地形 <select id="terrain"><option value="">全部地形</option></select></label>
+    <label>结果 <select id="outcome"><option value="">全部结果</option></select></label>
+    <label>速度 <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
+    <button id="pause" type="button">暂停全部</button>
+    <span id="count"></span>
+  </div>
+  <section id="cards" aria-label="实验录像"></section>
+  <footer>来源与 SHA-256：<a href="manifest.json">manifest.json</a>。下载或克隆后同时保留本页、manifest.js 与 animations/ 即可离线播放。</footer>
+</main>
+<script src="manifest.js"></script>
+<script>
+const manifest=window.AME2_VIDEO_MANIFEST||{videos:[]};
+const videos=manifest.videos||[];
+const terrain=document.getElementById('terrain'), outcome=document.getElementById('outcome'), speed=document.getElementById('speed'), cards=document.getElementById('cards');
+function shownNumber(value){return Number.isFinite(value)?String(Math.round(value*1000)/1000):'未记录'}
+function node(tag,text,cls){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e}
+function values(control,key){[...new Set(videos.map(v=>v[key]).filter(Boolean))].sort().forEach(v=>{const o=node('option',v);o.value=v;control.append(o)})}
+values(terrain,'terrain');values(outcome,'outcome');
+function render(){cards.replaceChildren();const shown=videos.filter(v=>(!terrain.value||v.terrain===terrain.value)&&(!outcome.value||v.outcome===outcome.value));document.getElementById('count').textContent=`${shown.length} / ${videos.length} 段录像`;
+if(!shown.length){cards.append(node('div',videos.length?'当前筛选没有录像。':'尚未导出本次实验视频。请先执行真实验证，再在 Docker 内运行 usage_assets/export.py。','empty'));return}
+for(const v of shown){const card=node('article',undefined,'card');card.id=v.id;const player=node('video');player.controls=true;player.preload='none';player.src=v.video;player.poster=v.poster;player.playsInline=true;player.playbackRate=Number(speed.value);card.append(player);const content=node('div',undefined,'content');content.append(node('h2',`${v.terrain} · ${v.policy||'policy'}${v.assisted?' · 外力辅助':''}`));content.append(node('span',v.outcome,'tag '+(v.outcome==='提前终止'?'bad':v.outcome==='进入目标半径'?'':'neutral')));content.append(node('div',`${v.task} · seed ${shownNumber(v.seed)} · difficulty ${shownNumber(v.difficulty)}`,'facts'));const env=v.environment||{};const early=Number.isFinite(env.early_terminations)?shownNumber(env.early_terminations)+' 次':env.early_termination_observed===true?'有（次数未记录）':env.early_termination_observed===false?'无':'未记录';const distance=Number.isFinite(env.minimum_goal_distance_m)?env.minimum_goal_distance_m.toFixed(3)+' m':'未记录';content.append(node('div',`执行 ${shownNumber(v.steps_completed)} 步 / 仿真 ${shownNumber(v.simulation_seconds)} s；MP4 ${shownNumber(v.duration_seconds)} s；最小目标距离 ${distance}；提前终止 ${early}。`,'facts'));content.append(node('div',`有限值检查：${v.finite_checks_passed===true?'通过':v.finite_checks_passed===false?'未通过':'该入口未记录'}`,'facts'));const details=node('details');details.append(node('summary','查看来源、checkpoint 和哈希'));details.append(node('pre',JSON.stringify({recorded_utc:v.started_utc,checkpoint:v.checkpoint,jit:v.jit,environment:env,source:v.source,report:v.report,video_sha256:v.video_sha256},null,2)));content.append(details);card.append(content);cards.append(card)}
+if(location.hash){const target=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(target)target.scrollIntoView({block:'center'})}}
+terrain.addEventListener('change',render);outcome.addEventListener('change',render);speed.addEventListener('change',()=>document.querySelectorAll('video').forEach(v=>v.playbackRate=Number(speed.value)));document.getElementById('pause').addEventListener('click',()=>document.querySelectorAll('video').forEach(v=>v.pause()));render();
+</script>
+</html>

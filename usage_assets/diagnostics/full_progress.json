@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "state": "running",
+  "completed": false,
+  "as_of_utc": "2026-10-10T04:50:45.094595+00:00",
+  "task": "Ame2-G1-Gaze",
+  "num_envs": 4096,
+  "max_iterations": 5000,
+  "last_completed_iteration": 95,
+  "iterations_completed": 96,
+  "current_checkpoint": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full/model_0.pt",
+  "current_checkpoint_bytes": 82509875,
+  "initial_checkpoint_finite": true,
+  "finite_loss": true,
+  "recent_iterations": [
+    {
+      "iteration": 91,
+      "value_loss": 0.0042,
+      "surrogate_loss": -0.0184,
+      "iteration_seconds": 6.76
+    },
+    {
+      "iteration": 92,
+      "value_loss": 0.0036,
+      "surrogate_loss": -0.0192,
+      "iteration_seconds": 6.79
+    },
+    {
+      "iteration": 93,
+      "value_loss": 0.0032,
+      "surrogate_loss": -0.0209,
+      "iteration_seconds": 6.78
+    },
+    {
+      "iteration": 94,
+      "value_loss": 0.0041,
+      "surrogate_loss": -0.0172,
+      "iteration_seconds": 6.8
+    },
+    {
+      "iteration": 95,
+      "value_loss": 0.0033,
+      "surrogate_loss": -0.0204,
+      "iteration_seconds": 6.81
+    }
+  ],
+  "container": "ame2-cloud-research",
+  "container_id": "dd1726ac1d43055750d8fe9248536acdc488fa712033330134e557b6651e7deb",
+  "container_running": true,
+  "container_image_store_id": "sha256:9cf08889ca23b128f223b0988e0b4354b39be2a5782cccbc0888935b21bcbc10",
+  "image_config_digest": "sha256:6333e6323c90d66b81746da1ca2add459fa30019790b7e63524a26d0797fad46",
+  "physical_gpu_index": 2,
+  "gpu_uuid": "GPU-a09fb05f-374a-3512-7ed9-5d3c0c6d224e",
+  "optimizer": "muon",
+  "mixed_precision": "bf16",
+  "critic_heads": 23,
+  "save_interval": 200,
+  "estimated_seconds_remaining": 33195.176,
+  "estimated_finish_utc": "2026-10-10T14:04:00.270595+00:00",
+  "estimate_basis": "last up to 10 completed steady iteration times; estimate may change as training progresses",
+  "runtime_source_revision": "7cb5e1e53e1f14cf9f9bcd08ddffa67bbf37f469",
+  "source_hash_manifest": "source-sha256.txt",
+  "log_dir": "/workspace/ame2-minimal/ame2/logs/rsl_rl/research_official_full/2026-10-10_04-38-09_full",
+  "remote_driver_log": "/diff/dzp_is_sb/ame2-research/outputs/research/reproduce-20261010/cloud_full/driver.log",
+  "training_processes": [
+    "PID                 ELAPSED             COMMAND",
+    "3855881             11:31               sleep infinity",
+    "3856850             11:16               bash /workspace/ame2-minimal/container/training_job.sh full",
+    "3856931             11:16               tee -a /workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_full/driver.log",
+    "3856933             11:16               nvidia-smi --query-gpu=timestamp,index,uuid,memory.used,utilization.gpu --format=csv -l 2",
+    "3857405             11:15               /bin/bash /isaac-sim/python.sh scripts/rsl_rl/train.py --headless --task Ame2-G1-Gaze --num_envs 4096 --max_iterations 5000 --seed 42 --experiment_name research_official_full --run_name full --logger tensorboard --result_json /workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_full/train_result.json agent.save_interval=200",
+    "3857410             11:15               /isaac-sim/kit/python/bin/python3 scripts/rsl_rl/train.py --headless --task Ame2-G1-Gaze --num_envs 4096 --max_iterations 5000 --seed 42 --experiment_name research_official_full --run_name full --logger tensorboard --result_json /workspace/ame2-minimal/outputs/research/reproduce-20261010/cloud_full/train_result.json agent.save_interval=200"
+  ]
+}

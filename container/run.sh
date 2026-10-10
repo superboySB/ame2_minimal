@@ -18,7 +18,7 @@ Environment: IMAGE=ame2:research, SHM_SIZE=8g, CPUS, MEMORY_LIMIT, MASTER_PORT=2
  AME2_NCCL_COMPAT=1 selects the tested single-host NCCL fallback; explicit NCCL_* overrides are forwarded.
 Examples:
   container/run.sh -g 0 play --task Ame2-G1-Gaze-Play --checkpoint /workspace/ame2-minimal/modelzoo/g1_gaze_64000env_10h/model_2400.pt
-  container/run.sh -g auto -d --name ame2-train train --task Ame2-G1-Gaze --num_envs 4096
+  container/run.sh -g auto -d --name ame2-train train --task Ame2-G1-Gaze --num_envs 64 --max_iterations 3
   container/run.sh cmd /isaac-sim/python.sh scripts/list_envs.py
 HELP
 }

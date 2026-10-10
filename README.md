@@ -31,14 +31,16 @@ The codebase is mostly vibecoded, and many IsaacLab know-hows are from Mayank Mi
 + rsl_rl: bundled in `rsl_rl/`
 + install via container (from the repo root, needs Docker + NVIDIA Container Toolkit):
   ```bash
-  ./container/build.sh                                                        # build ame2-minimal:latest
-  ./container/run.sh -g 0 train --task Ame2-G1-Gaze --num_envs 4096           # single-GPU training
-  ./container/run.sh -g 0,1 train --task Ame2-G1-Gaze --num_envs 4096         # multi-GPU (torchrun)
+  ./container/build.sh                                                        # build ame2:research
+  ./container/run.sh -g 0 train --task Ame2-G1-Gaze --num_envs 64 --max_iterations 3 # single-GPU smoke
+  AME2_NCCL_COMPAT=1 ./container/run.sh -g 0,1 train --task Ame2-G1-Gaze --num_envs 64 --max_iterations 3 # multi-GPU smoke (torchrun)
   ./container/run.sh -g 0 --gui play --task Ame2-G1-Gaze-Play --checkpoint <path/to/model.pt>
   ./container/run.sh shell                                                    # interactive shell
   ./container/run.sh -d shell                                                 # background container to exec into
   ./container/run.sh exec [NAME]                                              # bash into a running container (default: newest)
   ```
+
+  `AME2_NCCL_COMPAT=1` enables the single-host NCCL compatibility settings tested on `tencent-231`; see [note.md](note.md) for the cloud command and GPU availability checks. The full 4096-environment training exceeded the local 16 GiB GPU in this reproduction.
 
 
 
