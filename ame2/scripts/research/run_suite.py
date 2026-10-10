@@ -85,7 +85,7 @@ elif args.phase == "training":
                                "agent.save_interval=1"]))
     jobs.append(("single_head_critic", [python, "scripts/rsl_rl/train.py", "--headless", "--task", "Ame2-G1-Gaze",
                  "--num_envs", str(args.num_envs), "--max_iterations", "2", "--seed", "42", "--logger", "tensorboard",
-                 "--experiment_name", "research_matrix", "--run_name", "single_head", "+agent.algorithm.multi_head_critic=false"]))
+                 "--experiment_name", "research_matrix", "--run_name", "single_head", "agent.algorithm.multi_head_critic=false"]))
 
 env = dict(os.environ)
 env.update(OMP_NUM_THREADS="8", MKL_NUM_THREADS="8", OPENBLAS_NUM_THREADS="8", MPLBACKEND="Agg")

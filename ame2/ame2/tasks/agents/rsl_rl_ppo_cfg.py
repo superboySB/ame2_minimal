@@ -87,6 +87,9 @@ class RslRlPpoAlgorithmCfg:
     # bfloat16 autocast for the update's forward pass and loss only (adapted from rsl_rl PR #219);
     # weights, backward, optimizer and exports stay fp32. Most beneficial on Blackwell GPUs.
     use_mixed_precision: bool = True
+    # Declared explicitly so Hydra/configclass can override it through a
+    # normal key; adding an undeclared key is rejected by configclass.from_dict.
+    multi_head_critic: bool = True
     num_learning_epochs: int = MISSING
     num_mini_batches: int = MISSING
     learning_rate: float = MISSING

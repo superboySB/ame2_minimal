@@ -23,6 +23,11 @@ for candidate in "${CONTENT_ROOT:-/var/lib/containerd}/$BLOB" "$DOCKER_ROOT/cont
         --mount "type=bind,src=$candidate,dst=/ame2-image-manifest.json,readonly" "$IMAGE" \
         -c 'import json; print(json.load(open("/ame2-image-manifest.json"))["config"]["digest"])' 2>/dev/null); then
         [[ "$CONFIG" =~ ^sha256:[0-9a-f]{64}$ ]] || { echo 'Invalid OCI config digest' >&2; exit 1; }
+        config_blob="${candidate%/*}/${CONFIG#sha256:}"
+        actual=$(docker run --rm --entrypoint /isaac-sim/python.sh \
+            --mount "type=bind,src=$config_blob,dst=/ame2-image-config.json,readonly" "$IMAGE" \
+            -c 'import hashlib; print("sha256:" + hashlib.sha256(open("/ame2-image-config.json", "rb").read()).hexdigest())')
+        [[ "$actual" == "$CONFIG" ]] || { echo 'OCI config blob checksum mismatch' >&2; exit 1; }
         echo "$CONFIG"; exit 0
     fi
 done

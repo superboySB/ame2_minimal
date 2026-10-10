@@ -56,41 +56,50 @@ pull_results() {
     done
 }
 transfer_image() {
-    local image_id remote_id key archive checksum
+    local image_id remote_id key archive checksum transfer_tag
     if (( DRY_RUN )); then
-        echo '# Inspect local and remote image IDs; skip when they match.'
-        show docker image inspect "$IMAGE" --format '{{.Id}}'
-        remote docker image inspect "$IMAGE" --format '{{.Id}}'
+        echo '# Compare stable complete image config digests; Docker store .Id semantics differ.'
+        show "$HERE/image_identity.sh" "$IMAGE"
+        remote "$REMOTE_ROOT/container/image_identity.sh" "$IMAGE"
         echo '# Otherwise save to .transfer/IMAGE_ID.tar.gz, rsync archive + checksum, verify SHA256, load, verify stable config digest.'
         return
     fi
     image_id=$("$HERE/image_identity.sh" "$IMAGE")
+    key=${image_id#sha256:}; transfer_tag="ame2:transfer-$key"
+    docker tag "$IMAGE" "$transfer_tag"
+    [[ $("$HERE/image_identity.sh" "$transfer_tag") == "$image_id" ]] || { echo 'Image tag changed during snapshot; retry' >&2; exit 1; }
     remote mkdir -p "$REMOTE_ROOT/container"
     "${RSYNC[@]}" "$HERE/image_identity.sh" "$HOST:$REMOTE_ROOT/container/"
     remote_id=$(remote "$REMOTE_ROOT/container/image_identity.sh" "$IMAGE" 2>/dev/null || true)
-    if [[ "$remote_id" == "$image_id" ]]; then echo "[cloud] exact image already loaded: $image_id"; return; fi
-    key=${image_id#sha256:}; archive="$ROOT/.transfer/ame2-$key.tar.gz"; checksum="$archive.sha256"
+    if [[ "$remote_id" == "$image_id" ]]; then local local_layers remote_layers
+        local_layers=$(docker image inspect "$transfer_tag" --format '{{json .RootFS.Layers}}')
+        remote_layers=$(remote docker image inspect "$IMAGE" --format '{{json .RootFS.Layers}}')
+        [[ "$local_layers" == "$remote_layers" ]] || { echo 'Image filesystem layers differ' >&2; exit 1; }
+        echo "[cloud] exact image config and filesystem layers already loaded: $image_id"; return; fi
+    archive="$ROOT/.transfer/ame2-$key.tar.gz"; checksum="$archive.sha256"
     mkdir -p "$ROOT/.transfer"
-    if [[ ! -f "$archive" || ! -f "$checksum" ]] || ! (cd "$ROOT/.transfer" && sha256sum -c "$(basename "$checksum")" >/dev/null 2>&1); then
+    if [[ ! -f "$archive" || ! -f "$checksum" || ! -f "$archive.tag" ]] || [[ $(cat "$archive.tag" 2>/dev/null || true) != "$transfer_tag" ]] || ! (cd "$ROOT/.transfer" && sha256sum -c "$(basename "$checksum")" >/dev/null 2>&1); then
         echo "[cloud] saving $IMAGE ($image_id) to $archive"
-        docker save "$IMAGE" | gzip -1 > "$archive.partial"
+        docker save "$transfer_tag" | gzip -1 > "$archive.partial"
         mv "$archive.partial" "$archive"
         (cd "$ROOT/.transfer" && sha256sum "$(basename "$archive")" > "$(basename "$checksum")")
+        printf '%s\n' "$transfer_tag" > "$archive.tag"
     fi
     remote mkdir -p "$REMOTE_ROOT/.transfer"
-    "${RSYNC[@]}" --info=progress2 "$archive" "$checksum" "$HOST:$REMOTE_ROOT/.transfer/"
+    "${RSYNC[@]}" --fuzzy --stats --info=progress2 "$archive" "$checksum" "$HOST:$REMOTE_ROOT/.transfer/"
     # sha256sum paths are local to the transfer directory; use one safely quoted remote shell script.
     local script quoted
     printf -v script 'cd %q && sha256sum -c %q && gzip -dc %q | docker load' \
         "$REMOTE_ROOT/.transfer" "$(basename "$checksum")" "$(basename "$archive")"
     printf -v quoted '%q' "$script"
     "${SSH[@]}" "$HOST" "bash -o pipefail -lc $quoted"
-    remote_id=$(remote "$REMOTE_ROOT/container/image_identity.sh" "$IMAGE")
+    remote_id=$(remote "$REMOTE_ROOT/container/image_identity.sh" "$transfer_tag")
     [[ "$image_id" == "$remote_id" ]] || { echo "Image configuration mismatch: local=$image_id remote=$remote_id" >&2; exit 1; }
     local local_layers remote_layers
-    local_layers=$(docker image inspect "$IMAGE" --format '{{json .RootFS.Layers}}')
-    remote_layers=$(remote docker image inspect "$IMAGE" --format '{{json .RootFS.Layers}}')
+    local_layers=$(docker image inspect "$transfer_tag" --format '{{json .RootFS.Layers}}')
+    remote_layers=$(remote docker image inspect "$transfer_tag" --format '{{json .RootFS.Layers}}')
     [[ "$local_layers" == "$remote_layers" ]] || { echo 'Image filesystem layers differ' >&2; exit 1; }
+    remote docker tag "$transfer_tag" "$IMAGE"
     echo "[cloud] verified identical image config and filesystem layers: $image_id"
 }
 case "$MODE" in

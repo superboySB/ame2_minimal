@@ -86,7 +86,7 @@ def build_inventory(root):
             {"name": "bf16_updates", "default": True, "override": "agent.algorithm.use_mixed_precision=true"},
             {"name": "fp32_updates", "default": False, "override": "agent.algorithm.use_mixed_precision=false"},
             {"name": "multi_head_critic", "default": True, "heads": len(rewards),
-             "disable_override": "+agent.algorithm.multi_head_critic=false"},
+             "disable_override": "agent.algorithm.multi_head_critic=false"},
             {"name": "critic_symmetry_augmentation", "default": True},
             {"name": "jit_export_and_inference", "available": True, "verification": "verify.py --export_jit --policy jit"},
             {"name": "onnx_export", "available": False, "reason": "AME2 actor as_onnx raises NotImplementedError"},

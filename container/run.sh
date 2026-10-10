@@ -37,8 +37,8 @@ done
 (( $# )) || { usage; exit 2; }
 MODE=$1; shift
 if [[ "$MODE" == exec ]]; then
-    NAME=${1:-$(docker ps --filter 'name=^ame2_' --format '{{.Names}}' | head -1)}
-    [[ -n "$NAME" ]] || { echo 'No running ame2_* container' >&2; exit 1; }
+    NAME=${1:-$(docker ps --filter 'name=^ame2[-_]' --format '{{.Names}}' | head -1)}
+    [[ -n "$NAME" ]] || { echo 'No running ame2-* or ame2_* container' >&2; exit 1; }
     (( $# == 0 )) || shift
     RUN=(docker exec); [[ ! -t 0 ]] || RUN+=(-it)
     RUN+=(-w /workspace/ame2-minimal/ame2 "$NAME")
