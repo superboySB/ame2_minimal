@@ -25,7 +25,7 @@ flowchart LR
   Train -->|checkpoint / YAML / 日志回传| Local
 ```
 
-仓库提供的机器人 USD、mesh、Mid360 扫描方向和 gaze checkpoint 随源码保留。NVIDIA 基础镜像首次拉取较大，构建前检查本地和服务器 Docker 数据目录的剩余空间。所有下文宿主机命令都从仓库根目录执行；`/isaac-sim/python.sh` 只在 Docker 内使用。
+仓库提供的机器人 USD、mesh、Mid360 扫描方向和 gaze checkpoint 随源码保留。`research` 分支将 G1 的四个 USD 保存为普通 Git 文件，并在该资产目录覆盖上层 LFS 规则；约 16.1 MB 的 base USD 内嵌全部 mesh，材质来自 Isaac 镜像。扫描方向 NPY 和官方 checkpoint 同样是完整 Git 文件，因此全新克隆不需要在宿主机安装 git-lfs 或另行下载这些运行资产。NVIDIA 基础镜像首次拉取较大，构建前检查本地和服务器 Docker 数据目录的剩余空间。所有下文宿主机命令都从仓库根目录执行；`/isaac-sim/python.sh` 只在 Docker 内使用。
 
 ```bash
 git clone --branch research https://github.com/superboySB/ame2_minimal.git ame2-research

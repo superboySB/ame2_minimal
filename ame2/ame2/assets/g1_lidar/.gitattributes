@@ -1,0 +1,3 @@
+# Keep the complete, small G1 asset self-contained in an ordinary Git clone.
+# Override ame2/.gitattributes so builds do not require host git-lfs or hydration.
+*.usd -filter -diff -merge -text
