@@ -171,9 +171,28 @@ class TestLearnLoop:
         runner.learn(num_learning_iterations=3)
         assert runner.current_learning_iteration == 2
 
+    def test_consecutive_learn_calls_do_not_repeat_iteration(self) -> None:
+        """A second learn call starts after the last completed update."""
+        runner = _build_runner()
+        runner.learn(num_learning_iterations=2)
+        runner.learn(num_learning_iterations=2)
+        assert runner.current_learning_iteration == 3
+
 
 class TestSaveLoad:
     """Tests for checkpoint save and load."""
+
+    def test_resumed_learning_starts_after_saved_iteration(self) -> None:
+        """Loading preserves the displayed index; the next update advances it."""
+        runner = _build_runner()
+        runner.learn(num_learning_iterations=3)
+        with tempfile.NamedTemporaryFile(suffix=".pt") as checkpoint:
+            runner.save(checkpoint.name)
+            restored = _build_runner()
+            restored.load(checkpoint.name)
+            assert restored.current_learning_iteration == 2
+            restored.learn(num_learning_iterations=1)
+            assert restored.current_learning_iteration == 3
 
     def test_save_creates_file(self) -> None:
         """save() should create a checkpoint file at the given path."""

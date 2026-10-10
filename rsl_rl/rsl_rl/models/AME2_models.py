@@ -1211,7 +1211,7 @@ class _TorchAME2Model(nn.Module):
         self.mha = copy.deepcopy(model.mha)
         self.output_mlp = copy.deepcopy(model.output_mlp)
 
-        if hasattr(model, "distribution") and model.distribution is not None:
+        if hasattr(getattr(model, "distribution", None), "as_deterministic_output_module"):
             self.deterministic_output = model.distribution.as_deterministic_output_module()
         else:
             self.deterministic_output = nn.Identity()
@@ -1273,7 +1273,7 @@ class _TorchAME2GazeModel(nn.Module):
         self.mha = copy.deepcopy(model.mha)
         self.output_mlp = copy.deepcopy(model.output_mlp)
 
-        if hasattr(model, "distribution") and model.distribution is not None:
+        if hasattr(getattr(model, "distribution", None), "as_deterministic_output_module"):
             self.deterministic_output = model.distribution.as_deterministic_output_module()
         else:
             self.deterministic_output = nn.Identity()
@@ -1365,7 +1365,7 @@ class _TorchAME2GazeLSIOModel(nn.Module):
         self.mha = copy.deepcopy(model.mha)
         self.output_mlp = copy.deepcopy(model.output_mlp)
 
-        if hasattr(model, "distribution") and model.distribution is not None:
+        if hasattr(getattr(model, "distribution", None), "as_deterministic_output_module"):
             self.deterministic_output = model.distribution.as_deterministic_output_module()
         else:
             self.deterministic_output = nn.Identity()

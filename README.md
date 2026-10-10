@@ -1,5 +1,7 @@
 # Minimal AME-2 extension of IsaacLab
 
+Research branch guide (中文): [Docker / local–cloud setup](note.md), [feature reproduction and evidence](usage.md).
+
 <img src="misc/all_terrains_4x3.webp" width="100%" alt="AME-2 G1 on all training terrains">
 
 Website: https://sites.google.com/leggedrobotics.com/ame-2  

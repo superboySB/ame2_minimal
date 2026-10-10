@@ -8,7 +8,10 @@
 """Launch Isaac Sim Simulator first."""
 
 import argparse
+import json
+import os
 import sys
+import time
 
 from isaaclab.app import AppLauncher
 
@@ -26,6 +29,7 @@ parser.add_argument(
 )
 parser.add_argument("--seed", type=int, default=None, help="Seed used for the environment")
 parser.add_argument("--max_iterations", type=int, default=None, help="RL Policy training iterations.")
+parser.add_argument("--result_json", type=str, default=None, help="Write the exact run/checkpoint and training outcome to JSON.")
 parser.add_argument(
     "--distributed", action="store_true", default=False, help="Run training with multiple GPUs or nodes."
 )
@@ -38,6 +42,38 @@ cli_args.add_rsl_rl_args(parser)
 # append AppLauncher cli args
 AppLauncher.add_app_launcher_args(parser)
 args_cli, hydra_args = parser.parse_known_args()
+original_command = list(sys.argv)
+training_result = {"schema_version": 1, "command": original_command, "task": args_cli.task,
+                   "rank": int(os.environ.get("RANK", "0")),
+                   "world_size": int(os.environ.get("WORLD_SIZE", "1")), "passed": False}
+training_started = time.monotonic()
+
+
+def write_training_result():
+    """Each distributed rank owns its manifest, preventing concurrent writes."""
+    if args_cli.result_json:
+        from pathlib import Path
+        path = Path(args_cli.result_json).resolve()
+        if training_result["rank"]:
+            path = path.with_name(f"{path.stem}.rank{training_result['rank']}{path.suffix}")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        training_result["wall_seconds"] = time.monotonic() - training_started
+        temporary = path.with_suffix(path.suffix + ".tmp")
+        temporary.write_text(json.dumps(training_result, indent=2) + "\n")
+        temporary.replace(path)
+
+
+def fail_fast(exc_type, exc_value, exc_traceback):
+    """Preserve failures despite Kit's exception hooks and native fastShutdown."""
+    training_result["passed"] = False
+    training_result["error"] = {"type": exc_type.__name__, "message": str(exc_value)}
+    sys.__excepthook__(exc_type, exc_value, exc_traceback)
+    try:
+        write_training_result()
+    finally:
+        sys.stdout.flush()
+        sys.stderr.flush()
+        os._exit(1)
 
 # always enable cameras to record video
 if args_cli.video:
@@ -49,6 +85,7 @@ sys.argv = [sys.argv[0]] + hydra_args
 # launch omniverse app
 app_launcher = AppLauncher(args_cli)
 simulation_app = app_launcher.app
+sys.excepthook = fail_fast
 
 """Check for minimum supported RSL-RL version."""
 
@@ -75,8 +112,6 @@ if version.parse(installed_version) < version.parse(RSL_RL_VERSION):
 
 import gymnasium as gym
 import logging
-import os
-import time
 import torch
 from datetime import datetime
 
@@ -122,6 +157,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     # note: certain randomizations occur in the environment initialization so we set the seed here
     env_cfg.seed = agent_cfg.seed
     env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
+    agent_cfg.device = env_cfg.sim.device
     # check for invalid combination of CPU device with distributed training
     if args_cli.distributed and args_cli.device is not None and "cpu" in args_cli.device:
         raise ValueError(
@@ -150,6 +186,14 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     if agent_cfg.run_name:
         log_dir += f"_{agent_cfg.run_name}"
     log_dir = os.path.join(log_root_path, log_dir)
+    training_result.update(
+        log_dir=log_dir, num_envs=env_cfg.scene.num_envs, seed=agent_cfg.seed,
+        device=agent_cfg.device, iterations_requested=agent_cfg.max_iterations,
+        actor_class=agent_cfg.actor.class_name, optimizer=agent_cfg.algorithm.optimizer,
+        use_mixed_precision=agent_cfg.algorithm.use_mixed_precision,
+        resumed=agent_cfg.resume,
+    )
+    write_training_result()
 
     # set the IO descriptors export flag if requested
     if isinstance(env_cfg, ManagerBasedRLEnvCfg):
@@ -170,7 +214,13 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
 
     # save resume path before creating a new log_dir
     if agent_cfg.resume or agent_cfg.algorithm.class_name == "Distillation":
-        resume_path = get_checkpoint_path(log_root_path, agent_cfg.load_run, agent_cfg.load_checkpoint)
+        requested_checkpoint = os.path.expanduser(agent_cfg.load_checkpoint)
+        if os.path.isfile(requested_checkpoint) or os.path.isabs(requested_checkpoint) or os.sep in requested_checkpoint:
+            resume_path = os.path.abspath(requested_checkpoint)
+            if not os.path.isfile(resume_path):
+                raise FileNotFoundError(f"Resume checkpoint not found: {resume_path}")
+        else:
+            resume_path = get_checkpoint_path(log_root_path, agent_cfg.load_run, agent_cfg.load_checkpoint)
 
     # wrap for video recording
     if args_cli.video:
@@ -196,23 +246,38 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         runner = DistillationRunner(env, agent_cfg.to_dict(), log_dir=log_dir, device=agent_cfg.device)
     else:
         raise ValueError(f"Unsupported runner class: {agent_cfg.class_name}")
+    training_result["critic_heads"] = getattr(runner.alg, "num_critic_heads", 1)
     # write git state to logs
     runner.add_git_repo_to_log(__file__)
     if agent_cfg.resume or agent_cfg.algorithm.class_name == "Distillation":
         print(f"[INFO]: Loading model checkpoint from: {resume_path}")
         runner.load(resume_path)
+        training_result["resume_checkpoint"] = resume_path
+    training_result["start_iteration"] = getattr(runner, "_next_learning_iteration", runner.current_learning_iteration)
+    training_result["loaded_iteration"] = runner.current_learning_iteration if agent_cfg.resume else None
+    write_training_result()
 
     # dump the configuration into log-directory
     dump_yaml(os.path.join(log_dir, "params", "env.yaml"), env_cfg)
     dump_yaml(os.path.join(log_dir, "params", "agent.yaml"), agent_cfg)
 
     runner.learn(num_learning_iterations=agent_cfg.max_iterations, init_at_random_ep_len=True)
+    final_checkpoint = os.path.join(log_dir, f"model_{runner.current_learning_iteration}.pt")
+    if training_result["rank"] == 0 and not os.path.isfile(final_checkpoint):
+        raise FileNotFoundError(f"Training finished without the final checkpoint: {final_checkpoint}")
+    training_result.update(final_iteration=runner.current_learning_iteration, final_checkpoint=final_checkpoint,
+                           iterations_completed=runner.current_learning_iteration - training_result["start_iteration"] + 1)
 
     print(f"Training time: {round(time.time() - start_time, 2)} seconds")
 
     env.close()
+    training_result["passed"] = True
+    write_training_result()
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except BaseException:
+        fail_fast(*sys.exc_info())
     simulation_app.close()

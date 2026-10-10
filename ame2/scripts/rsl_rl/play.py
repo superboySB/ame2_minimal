@@ -18,6 +18,8 @@ import cli_args  # isort: skip
 parser = argparse.ArgumentParser(description="Train an RL agent with RSL-RL.")
 parser.add_argument("--video", action="store_true", default=False, help="Record videos during training.")
 parser.add_argument("--video_length", type=int, default=200, help="Length of the recorded video (in steps).")
+parser.add_argument("--max_steps", type=int, default=None, help="Exit after this many policy steps, including without video.")
+parser.add_argument("--output_dir", type=str, default=None, help="Writable directory for videos, JIT, plots, and play_result.json.")
 parser.add_argument(
     "--disable_fabric", action="store_true", default=False, help="Disable fabric and use USD I/O operations."
 )
@@ -50,6 +52,11 @@ cli_args.add_rsl_rl_args(parser)
 # append AppLauncher cli args
 AppLauncher.add_app_launcher_args(parser)
 args_cli, hydra_args = parser.parse_known_args()
+original_command = list(sys.argv)
+if args_cli.max_steps is not None and args_cli.max_steps < 1:
+    parser.error("--max_steps must be positive")
+if args_cli.video_length < 1:
+    parser.error("--video_length must be positive")
 # always enable cameras to record video
 if args_cli.video:
     args_cli.enable_cameras = True
@@ -70,6 +77,8 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import json
+import traceback
 
 from rsl_rl.runners import DistillationRunner, OnPolicyRunner
 
@@ -379,6 +388,8 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     # note: certain randomizations occur in the environment initialization so we set the seed here
     env_cfg.seed = agent_cfg.seed
     env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
+    agent_cfg.device = env_cfg.sim.device
+    env_cfg.sim.use_fabric = not args_cli.disable_fabric
 
     # specify directory for logging experiments
     log_root_path = os.path.join("logs", "rsl_rl", agent_cfg.experiment_name)
@@ -394,7 +405,10 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     else:
         resume_path = get_checkpoint_path(log_root_path, agent_cfg.load_run, agent_cfg.load_checkpoint)
 
-    log_dir = os.path.dirname(resume_path)
+    log_dir = os.path.abspath(args_cli.output_dir) if args_cli.output_dir else os.path.join(
+        log_root_path, "play", time.strftime("%Y-%m-%d_%H-%M-%S")
+    )
+    os.makedirs(log_dir, exist_ok=True)
 
     # set the log directory for the environment (works for all environment types)
     env_cfg.log_dir = log_dir
@@ -459,7 +473,11 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         runner = DistillationRunner(env, agent_cfg.to_dict(), log_dir=None, device=agent_cfg.device)
     else:
         raise ValueError(f"Unsupported runner class: {agent_cfg.class_name}")
-    runner.load(resume_path)
+    if isinstance(runner, OnPolicyRunner):
+        runner.load(resume_path, load_cfg={"actor": True, "critic": True, "iteration": True},
+                    map_location=agent_cfg.device)
+    else:
+        runner.load(resume_path)
 
     # obtain the trained policy for inference
     policy = runner.get_inference_policy_with_attention(device=env.unwrapped.device)
@@ -656,8 +674,8 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
             print("[INFO] Loading exported model for verification play...")
             play_model = torch.jit.load(export_path, map_location=env.unwrapped.device)
             play_model.eval()
-        except Exception as e:
-            print(f"[ERROR] Export failed: {e}")
+        except Exception:
+            raise
 
     # initialize logger
     if args_cli.plot:
@@ -714,8 +732,9 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
                 vt_cmd = env.unwrapped.command_manager.get_term("base_pose")
                 d0 = float((vt_cmd.pos_command_w[0, :2] - vt_robot.data.root_pos_w[0, :2]).norm())
                 video_reached = video_reached or d0 < 0.5
-                if bool(dones.reshape(-1)[0].item()) and timestep < args_cli.video_length - 1:
-                    # terminated before the last recorded step (a timeout on that step is not early)
+                if bool(env.unwrapped.termination_manager.terminated.reshape(-1)[0].item()):
+                    # Timeouts end an episode normally; only task termination
+                    # (e.g. a fall) counts as an early failure in clip evidence.
                     video_early_done = True
 
             # --- return-home: goal -> (dwell) -> turn in place -> walk back ---
@@ -995,11 +1014,11 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
 
             sim_time += dt
 
-        if args_cli.video:
-            timestep += 1
-            # exit after recording one video
-            if timestep == args_cli.video_length:
-                break
+        timestep += 1
+        if args_cli.video and timestep >= args_cli.video_length:
+            break
+        if args_cli.max_steps is not None and timestep >= args_cli.max_steps:
+            break
 
         # time delay for real-time evaluation
         sleep_time = dt - (time.time() - start_time)
@@ -1011,9 +1030,34 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         print(f"[PLAY_RESULT] reached={video_reached} early_done={video_early_done} "
               f"success={video_reached and not video_early_done}")
 
+    result = {
+        "task": args_cli.task, "checkpoint": os.path.abspath(resume_path),
+        "terrain": args_cli.terrain, "difficulty": args_cli.difficulty,
+        "steps_completed": timestep, "simulation_seconds": sim_time,
+        "video": args_cli.video, "export": args_cli.export,
+        "reached_goal": video_reached if args_cli.video else None,
+        "early_termination": video_early_done if args_cli.video else None,
+        "command": original_command,
+    }
+    with open(os.path.join(log_dir, "play_result.json"), "w") as handle:
+        json.dump(result, handle, indent=2)
+        handle.write("\n")
+
+    controller = getattr(env.unwrapped, "viewport_camera_controller", None)
+    tracking = getattr(controller, "_viewport_camera_update_handle", None)
+    if tracking is not None:
+        tracking.unsubscribe()
+        controller._viewport_camera_update_handle = None
     env.close()
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except BaseException:
+        traceback.print_exc()
+        sys.stdout.flush()
+        sys.stderr.flush()
+        # Kit fastShutdown otherwise replaces a pending failure with exit 0.
+        os._exit(1)
     simulation_app.close()

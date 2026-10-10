@@ -1,6 +1,11 @@
-# Only this file applies to the build (context = repo root); nested .dockerignore files are not read.
+.git
 **/.git
 **/.github
+outputs
+artifacts
+usage_assets
+.cache
+.transfer
 **/logs
 **/runs
 **/output
@@ -11,6 +16,11 @@
 **/__pycache__
 **/*.egg-info
 **/*.tmp
+**/*.log
+**/*.tar
+**/*.tar.gz
+**/*.tar.zst
 **/_isaac_sim*
 **/env_isaaclab
-container
+.env
+.env.*

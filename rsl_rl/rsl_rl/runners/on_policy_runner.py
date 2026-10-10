@@ -52,6 +52,10 @@ class OnPolicyRunner:
         )
 
         self.current_learning_iteration = 0
+        # current_learning_iteration identifies the last completed update (and
+        # matches checkpoint filenames); the next update has a separate index
+        # so resumed or repeated learn() calls never replay an iteration.
+        self._next_learning_iteration = 0
 
     def learn(self, num_learning_iterations: int, init_at_random_ep_len: bool = False) -> None:
         """Run the learning loop for the specified number of iterations."""
@@ -74,7 +78,7 @@ class OnPolicyRunner:
         self.logger.init_logging_writer()
 
         # Start training
-        start_it = self.current_learning_iteration
+        start_it = self._next_learning_iteration
         total_it = start_it + num_learning_iterations
         for it in range(start_it, total_it):
             start = time.time()
@@ -119,6 +123,7 @@ class OnPolicyRunner:
             stop = time.time()
             learn_time = stop - start
             self.current_learning_iteration = it
+            self._next_learning_iteration = it + 1
 
             # Log information
             self.logger.log(
@@ -168,6 +173,7 @@ class OnPolicyRunner:
         load_iteration = self.alg.load(loaded_dict, load_cfg, strict)
         if load_iteration:
             self.current_learning_iteration = loaded_dict["iter"]
+            self._next_learning_iteration = self.current_learning_iteration + 1
         return loaded_dict["infos"]
 
     def get_inference_policy(self, device: str | None = None) -> MLPModel:
